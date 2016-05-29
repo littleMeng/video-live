@@ -7,11 +7,12 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.meng.videolive.R;
+import com.example.meng.videolive.douyuDanmu.client.DyBulletScreenClient;
+import com.example.meng.videolive.douyuDanmu.utils.KeepAlive;
+import com.example.meng.videolive.douyuDanmu.utils.KeepGetMsg;
 
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.vov.vitamio.Vitamio;
 import master.flame.danmaku.controller.DrawHandler;
@@ -35,6 +36,8 @@ public class PlayActivity extends Activity {
     private IDanmakuView mDanmakuView;
     private DanmakuContext mDanmakuContext;
     private BaseDanmakuParser mParser;
+    DyBulletScreenClient mDanmuClient;
+    private int mRoomId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,9 @@ public class PlayActivity extends Activity {
         hideSystemUI();
         init();
         String path = getIntent().getStringExtra("PATH");
+        int roomId = getIntent().getIntExtra("ROOM_ID", -1);
         playThePath(path);
+        playTheDanmu(roomId);
     }
 
     private void hideSystemUI() {
@@ -69,9 +74,9 @@ public class PlayActivity extends Activity {
         } catch (IllegalDataException e) {
             e.printStackTrace();
         }
-        HashMap<Integer, Integer> maxLinesPair = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 3);
-        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<Integer, Boolean>();
+        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
 
@@ -107,8 +112,6 @@ public class PlayActivity extends Activity {
             mDanmakuView.prepare(mParser, mDanmakuContext);
             mDanmakuView.enableDanmakuDrawingCache(true);
         }
-
-        timer.schedule(timerTask, 5000, 500);
     }
 
     private BaseDanmakuParser createParser(InputStream stream) throws IllegalDataException {
@@ -133,39 +136,57 @@ public class PlayActivity extends Activity {
         return parser;
     }
 
-    Timer timer = new Timer();
-
-    private TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            Log.i(TAG, "run: timer");
-            addDanmaku(true);
-        }
-    };
-
     private void playThePath(String path) {
         Uri uri = Uri.parse(path);
         videoView.setVideoURI(uri);
-//        videoView.setVideoLayout(VideoView.VIDEO_LAYOUT_SCALE, 0);
         videoView.start();
     }
 
-    private void addDanmaku(boolean islive) {
+    private void playTheDanmu(int roomId) {
+        mRoomId = roomId;
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int groupId = -9999;
+                mDanmuClient = DyBulletScreenClient.getInstance();
+                //设置需要连接和访问的房间ID，以及弹幕池分组号
+                mDanmuClient.init(mRoomId, groupId);
+
+                KeepAlive keepAlive = new KeepAlive();
+                keepAlive.start();
+
+                KeepGetMsg keepGetMsg = new KeepGetMsg();
+                keepGetMsg.start();
+
+                mDanmuClient.setmHandleMsgListener(new DyBulletScreenClient.HandleMsgListener() {
+                    @Override
+                    public void handleMessage(String txt) {
+                        addDanmaku(true, txt);
+                        Log.i(TAG, "handleMessage: txt=" + txt);
+                    }
+                });
+            }
+        });
+        thread.start();
+    }
+
+    private void addDanmaku(boolean islive, String txt) {
         BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
         if (danmaku == null || mDanmakuView == null) {
             return;
         }
-        danmaku.text = "这是一条弹幕" + System.nanoTime();
+        danmaku.text = txt;
         danmaku.padding = 5;
         danmaku.priority = 0;
         danmaku.isLive = islive;
-        danmaku.time = mDanmakuView.getCurrentTime() + 1200;
+        danmaku.time = mDanmakuView.getCurrentTime();
         mDanmakuView.addDanmaku(danmaku);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        timer.cancel();
+        mDanmuClient.unInit();
     }
 }

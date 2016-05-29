@@ -15,9 +15,18 @@ public class GsonDouyuRoomInfo {
     }
 
     public static class Data {
+        private int room_id;
         private String rtmp_url;
         private String rtmp_live;
         private String hls_url;
+
+        public int getRoom_id() {
+            return room_id;
+        }
+
+        public void setRoom_id(int room_id) {
+            this.room_id = room_id;
+        }
 
         public String getRtmp_url() {
             return rtmp_url;

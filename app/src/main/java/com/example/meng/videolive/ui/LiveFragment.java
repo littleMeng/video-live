@@ -81,6 +81,7 @@ public class LiveFragment extends Fragment {
                         String path = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
                         Intent intent = new Intent(getActivity(), PlayActivity.class);
                         intent.putExtra("PATH", path);
+                        intent.putExtra("ROOM_ID", roomInfo.getData().getRoom_id());
                         startActivity(intent);
                     }
                 }, new Response.ErrorListener() {
@@ -130,7 +131,6 @@ public class LiveFragment extends Fragment {
                     mptrClassicFrameLayout.refreshComplete();
                 }
             });
-//            requestQueue.add(new ClearCacheRequest(requestQueue.getCache(), null));
             requestQueue.add(request);
         }
     };
