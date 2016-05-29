@@ -1,6 +1,7 @@
 package com.example.meng.videolive.ui;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -180,6 +181,8 @@ public class PlayActivity extends Activity {
         danmaku.padding = 5;
         danmaku.priority = 0;
         danmaku.isLive = islive;
+        danmaku.textSize = 50f * (mParser.getDisplayer().getDensity() - 0.6f);
+        danmaku.textColor = Color.WHITE;
         danmaku.time = mDanmakuView.getCurrentTime();
         mDanmakuView.addDanmaku(danmaku);
     }
