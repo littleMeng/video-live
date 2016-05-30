@@ -14,4 +14,21 @@
         android:id="@+id/danmakuView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/view_control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#20000000"
+        android:visibility="invisible">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:text="@string/finish_play"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent" />
+    </RelativeLayout>
 </RelativeLayout>

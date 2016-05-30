@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.douyuDanmu.client.DyBulletScreenClient;
@@ -14,6 +18,8 @@ import com.example.meng.videolive.douyuDanmu.utils.KeepGetMsg;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.vov.vitamio.Vitamio;
 import master.flame.danmaku.controller.DrawHandler;
@@ -32,13 +38,17 @@ import master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
 public class PlayActivity extends Activity {
     private static final String TAG = "PLAY_ACTIVITY";
+    private static final int HIDE_CONTROL = 1;
     private io.vov.vitamio.widget.VideoView videoView;
+    private RelativeLayout mViewControl;
+    private Button mBtnBack;
 
     private IDanmakuView mDanmakuView;
     private DanmakuContext mDanmakuContext;
     private BaseDanmakuParser mParser;
     DyBulletScreenClient mDanmuClient;
     private int mRoomId;
+    Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +63,41 @@ public class PlayActivity extends Activity {
         playTheDanmu(roomId);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                if (mViewControl.getVisibility() == View.VISIBLE) {
+                    mViewControl.setVisibility(View.INVISIBLE);
+                } else {
+                    mViewControl.setVisibility(View.VISIBLE);
+//                    mTimer.schedule(new ViewControlTimerTask(), 3000);
+                }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case HIDE_CONTROL:
+                    mViewControl.setVisibility(View.INVISIBLE);
+                    break;
+                default:
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    class ViewControlTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            mHandler.sendEmptyMessage(HIDE_CONTROL);
+        }
+    }
+
     private void hideSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -65,6 +110,16 @@ public class PlayActivity extends Activity {
     private void init() {
         videoView = (io.vov.vitamio.widget.VideoView) findViewById(R.id.vtm_vv);
         mDanmakuView = (IDanmakuView) findViewById(R.id.danmakuView);
+        mViewControl = (RelativeLayout) findViewById(R.id.view_control);
+        mBtnBack = (Button) findViewById(R.id.btn_back);
+        mTimer = new Timer();
+
+        mBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         initDanmaku();
     }
 
@@ -164,7 +219,6 @@ public class PlayActivity extends Activity {
                     @Override
                     public void handleMessage(String txt) {
                         addDanmaku(true, txt);
-                        Log.i(TAG, "handleMessage: txt=" + txt);
                     }
                 });
             }
