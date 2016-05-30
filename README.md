@@ -1,5 +1,5 @@
 ###项目介绍
-视频直播源从斗鱼接口抓取，直播源分析来自[斗鱼API](http://430.io/-xie-dou-yu-tv-web-api-some-douyutv-api/)，其中利用到的MD5加密分析来自[MD5](https://github.com/0987363/douyutv-fix/blob/3dd6b9762a4cf5d359170b4a912457a0d4b5f5e5/DouYu-kodi-fix/APIHelper.py)，斗鱼弹幕提供官方API，具体实现是从斗鱼官网提供的java版本修改得到（TextUtils替换StringUtils、添加弹幕消息处理接口），视频播放器使用[vitamio](https://www.vitamio.org/)，弹幕实现使用[弹幕烈焰使](https://github.com/Bilibili/DanmakuFlameMaster)，请勿作为商用。
+视频直播源从斗鱼接口抓取，直播源分析来自[斗鱼API](http://430.io/-xie-dou-yu-tv-web-api-some-douyutv-api/)，其中利用到的MD5加密分析来自[MD5](https://github.com/0987363/douyutv-fix/blob/3dd6b9762a4cf5d359170b4a912457a0d4b5f5e5/DouYu-kodi-fix/APIHelper.py)，斗鱼弹幕提供官方API，具体实现是从斗鱼官网提供的java版本修改得到（TextUtils替换StringUtils、添加弹幕消息处理接口），视频播放器使用[vitamio](https://www.vitamio.org/)，弹幕实现使用[弹幕烈焰使](https://github.com/Bilibili/DanmakuFlameMaster)。
 
 #video-live
 
@@ -25,7 +25,7 @@
 * 直播页面——下拉刷新，返回20条直播页面信息，点击进入指定房间开始视频直播，显示弹幕
 
 ###待添加功能
-* 视频直播页面添加返回按钮、弹幕的显示/隐藏/显示位置控制（自动隐藏，触摸屏幕显示）
+* 视频直播页面添加返回按钮、弹幕的显示/隐藏/显示位置控制（控制按钮均自动隐藏，触摸屏幕显示）
 
 ###依赖
 ```java
