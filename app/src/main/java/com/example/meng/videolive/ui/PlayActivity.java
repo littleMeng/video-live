@@ -1,54 +1,32 @@
 package com.example.meng.videolive.ui;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import com.example.meng.videolive.R;
-import com.example.meng.videolive.douyuDanmu.client.DyBulletScreenClient;
-import com.example.meng.videolive.douyuDanmu.utils.KeepAlive;
-import com.example.meng.videolive.douyuDanmu.utils.KeepGetMsg;
-
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import com.example.meng.videolive.bean.DanmuProcess;
 
 import io.vov.vitamio.Vitamio;
-import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.controller.IDanmakuView;
-import master.flame.danmaku.danmaku.loader.ILoader;
-import master.flame.danmaku.danmaku.loader.IllegalDataException;
-import master.flame.danmaku.danmaku.loader.android.DanmakuLoaderFactory;
-import master.flame.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.danmaku.model.IDisplayer;
-import master.flame.danmaku.danmaku.model.android.DanmakuContext;
-import master.flame.danmaku.danmaku.model.android.Danmakus;
-import master.flame.danmaku.danmaku.parser.BaseDanmakuParser;
-import master.flame.danmaku.danmaku.parser.IDataSource;
-import master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
 public class PlayActivity extends Activity {
     private static final String TAG = "PLAY_ACTIVITY";
-    private static final int HIDE_CONTROL = 1;
+    private static final int CONTROL_STAY_TIME = 4000;
     private io.vov.vitamio.widget.VideoView videoView;
     private RelativeLayout mViewControl;
     private Button mBtnBack;
+    private Switch mDanmuSwitch;
 
     private IDanmakuView mDanmakuView;
-    private DanmakuContext mDanmakuContext;
-    private BaseDanmakuParser mParser;
-    DyBulletScreenClient mDanmuClient;
-    private int mRoomId;
-    Timer mTimer;
+    private DanmuProcess mDanmuProcess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,44 +37,34 @@ public class PlayActivity extends Activity {
         init();
         String path = getIntent().getStringExtra("PATH");
         int roomId = getIntent().getIntExtra("ROOM_ID", -1);
-        playThePath(path);
-        playTheDanmu(roomId);
+        playVideo(path);
+        playDanmu(roomId);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         switch (action) {
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_UP:
                 if (mViewControl.getVisibility() == View.VISIBLE) {
                     mViewControl.setVisibility(View.INVISIBLE);
+                    mHandler.removeCallbacks(mRunnable);
                 } else {
                     mViewControl.setVisibility(View.VISIBLE);
-//                    mTimer.schedule(new ViewControlTimerTask(), 3000);
+                    mHandler.postDelayed(mRunnable, CONTROL_STAY_TIME);
                 }
         }
         return super.onTouchEvent(event);
     }
 
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case HIDE_CONTROL:
-                    mViewControl.setVisibility(View.INVISIBLE);
-                    break;
-                default:
-            }
-            super.handleMessage(msg);
-        }
-    };
+    Handler mHandler = new Handler();
 
-    class ViewControlTimerTask extends TimerTask {
+    Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            mHandler.sendEmptyMessage(HIDE_CONTROL);
+            mViewControl.setVisibility(View.INVISIBLE);
         }
-    }
+    };
 
     private void hideSystemUI() {
         View decorView = getWindow().getDecorView();
@@ -112,138 +80,48 @@ public class PlayActivity extends Activity {
         mDanmakuView = (IDanmakuView) findViewById(R.id.danmakuView);
         mViewControl = (RelativeLayout) findViewById(R.id.view_control);
         mBtnBack = (Button) findViewById(R.id.btn_back);
-        mTimer = new Timer();
+        mDanmuSwitch = (Switch) findViewById(R.id.swch_danmu);
 
+        mViewControl.setVisibility(View.INVISIBLE);
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        initDanmaku();
+        mDanmuSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mDanmakuView.hide();
+                } else {
+                    mDanmakuView.show();
+                }
+                restartHideViewDelay();
+            }
+        });
     }
 
-    private void initDanmaku() {
-        mDanmakuContext = DanmakuContext.create();
-        try {
-            mParser = createParser(null);
-        } catch (IllegalDataException e) {
-            e.printStackTrace();
-        }
-        HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
-        maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 3);
-        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
-        overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
-        overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
-
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
-                .setDuplicateMergingEnabled(false)
-                .setScrollSpeedFactor(1.2f)
-                .setScaleTextSize(1.2f)
-                .setMaximumLines(maxLinesPair)
-                .preventOverlapping(overlappingEnablePair);
-
-        if (mDanmakuView != null) {
-            mDanmakuView.setCallback(new DrawHandler.Callback() {
-                @Override
-                public void prepared() {
-                    mDanmakuView.start();
-                }
-
-                @Override
-                public void updateTimer(DanmakuTimer timer) {
-
-                }
-
-                @Override
-                public void danmakuShown(BaseDanmaku danmaku) {
-
-                }
-
-                @Override
-                public void drawingFinished() {
-
-                }
-            });
-            mDanmakuView.prepare(mParser, mDanmakuContext);
-            mDanmakuView.enableDanmakuDrawingCache(true);
-        }
+    private void restartHideViewDelay() {
+        mHandler.removeCallbacks(mRunnable);
+        mHandler.postDelayed(mRunnable, CONTROL_STAY_TIME);
     }
 
-    private BaseDanmakuParser createParser(InputStream stream) throws IllegalDataException {
-
-        if (stream == null) {
-            return new BaseDanmakuParser() {
-
-                @Override
-                protected Danmakus parse() {
-                    return new Danmakus();
-                }
-            };
-        }
-
-        ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
-
-        loader.load(stream);
-
-        BaseDanmakuParser parser = new BiliDanmukuParser();
-        IDataSource<?> dataSource = loader.getDataSource();
-        parser.load(dataSource);
-        return parser;
+    private void playDanmu(int roomId) {
+        mDanmuProcess = new DanmuProcess(this, mDanmakuView, roomId);
+        mDanmuProcess.start();
     }
 
-    private void playThePath(String path) {
+    private void playVideo(String path) {
         Uri uri = Uri.parse(path);
         videoView.setVideoURI(uri);
         videoView.start();
     }
 
-    private void playTheDanmu(int roomId) {
-        mRoomId = roomId;
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int groupId = -9999;
-                mDanmuClient = DyBulletScreenClient.getInstance();
-                //设置需要连接和访问的房间ID，以及弹幕池分组号
-                mDanmuClient.init(mRoomId, groupId);
-
-                KeepAlive keepAlive = new KeepAlive();
-                keepAlive.start();
-
-                KeepGetMsg keepGetMsg = new KeepGetMsg();
-                keepGetMsg.start();
-
-                mDanmuClient.setmHandleMsgListener(new DyBulletScreenClient.HandleMsgListener() {
-                    @Override
-                    public void handleMessage(String txt) {
-                        addDanmaku(true, txt);
-                    }
-                });
-            }
-        });
-        thread.start();
-    }
-
-    private void addDanmaku(boolean islive, String txt) {
-        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
-        if (danmaku == null || mDanmakuView == null) {
-            return;
-        }
-        danmaku.text = txt;
-        danmaku.padding = 5;
-        danmaku.priority = 0;
-        danmaku.isLive = islive;
-        danmaku.textSize = 50f * (mParser.getDisplayer().getDensity() - 0.6f);
-        danmaku.textColor = Color.WHITE;
-        danmaku.time = mDanmakuView.getCurrentTime();
-        mDanmakuView.addDanmaku(danmaku);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDanmuClient.unInit();
+        mDanmuProcess.finish();
+        mDanmakuView.release();
     }
 }

@@ -25,10 +25,24 @@
         <Button
             android:id="@+id/btn_back"
             android:text="@string/finish_play"
+            android:textAllCaps="false"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:background="@android:color/transparent" />
+
+        <Switch
+            android:id="@+id/swch_danmu"
+            android:text="@string/switch_danmu"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
             android:background="@android:color/transparent" />
     </RelativeLayout>
 </RelativeLayout>
