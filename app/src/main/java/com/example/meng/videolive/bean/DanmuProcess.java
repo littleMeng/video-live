@@ -43,7 +43,7 @@ public class DanmuProcess {
 
     public void start() {
         initDanmaku();
-        playTheDanmu();
+        getAndAddDanmu();
     }
 
     private void initDanmaku() {
@@ -94,7 +94,6 @@ public class DanmuProcess {
     }
 
     private BaseDanmakuParser createParser(InputStream stream) throws IllegalDataException {
-
         if (stream == null) {
             return new BaseDanmakuParser() {
 
@@ -104,18 +103,15 @@ public class DanmuProcess {
                 }
             };
         }
-
         ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
-
         loader.load(stream);
-
         BaseDanmakuParser parser = new BiliDanmukuParser();
         IDataSource<?> dataSource = loader.getDataSource();
         parser.load(dataSource);
         return parser;
     }
 
-    private void playTheDanmu() {
+    private void getAndAddDanmu() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

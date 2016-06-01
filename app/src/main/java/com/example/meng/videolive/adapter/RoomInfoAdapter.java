@@ -52,7 +52,7 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ImageLoader.ImageListener listener = ImageLoader.getImageListener(holder.roomSrc,
-                R.mipmap.ic_launcher, R.mipmap.ic_launcher);
+                R.mipmap.default_dota2, R.mipmap.default_dota2);
         imageLoader.get(roomInfos.get(position).getRoomSrc(), listener);
 
         handleClick(holder);
