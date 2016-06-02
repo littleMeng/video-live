@@ -7,6 +7,8 @@ public class RoomInfo {
     private int roomId;
     private String roomSrc;
     private String roomName;
+
+    private String nickname;
     private int online;
 
     public int getRoomId() {
@@ -31,6 +33,14 @@ public class RoomInfo {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public int getOnline() {

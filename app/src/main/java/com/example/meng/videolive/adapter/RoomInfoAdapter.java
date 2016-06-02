@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
@@ -54,6 +55,11 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
         ImageLoader.ImageListener listener = ImageLoader.getImageListener(holder.roomSrc,
                 R.mipmap.default_dota2, R.mipmap.default_dota2);
         imageLoader.get(roomInfos.get(position).getRoomSrc(), listener);
+        String nickname = roomInfos.get(position).getNickname();
+        holder.nickname.setText(nickname);
+        int online = roomInfos.get(position).getOnline();
+        String onlineStr = String.valueOf(online) + "位观众";
+        holder.online.setText(onlineStr);
 
         handleClick(holder);
     }
@@ -81,10 +87,14 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView roomSrc;
+        TextView nickname;
+        TextView online;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             roomSrc = (ImageView) itemView.findViewById(R.id.iv_room);
+            nickname = (TextView) itemView.findViewById(R.id.nickname);
+            online = (TextView) itemView.findViewById(R.id.online);
         }
     }
 }

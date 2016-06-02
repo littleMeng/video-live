@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         if (viewPager != null) {
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-//            viewPager.setOffscreenPageLimit(2);
+            viewPager.setOffscreenPageLimit(4);
             mPagerSlidingTabStrip.setViewPager(viewPager);
         }
         setTabsValue();

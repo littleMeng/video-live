@@ -38,11 +38,30 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class LiveFragment extends Fragment {
     private static final String TAG = "LIVE_FRAGMENT";
+    public static final String ARGUMENT = "argument";
     private PtrClassicFrameLayout mptrClassicFrameLayout;
     private RecyclerView mRecyclerView;
     private List<RoomInfo> mRoomInfos;
     private RoomInfoAdapter mAdapter;
-    private RequestQueue requestQueue;
+    private RequestQueue mRequestQueue;
+    private String mRequestUrl;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mRequestUrl = bundle.getString(ARGUMENT);
+        }
+    }
+
+    public static LiveFragment newInstance(String argument) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ARGUMENT, argument);
+        LiveFragment liveFragment = new LiveFragment();
+        liveFragment.setArguments(bundle);
+        return liveFragment;
+    }
 
     @Nullable
     @Override
@@ -59,13 +78,13 @@ public class LiveFragment extends Fragment {
         mptrClassicFrameLayout = (PtrClassicFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.store_house_ptr_rv);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        requestQueue = Volley.newRequestQueue(getContext());
+        mRequestQueue = Volley.newRequestQueue(getContext());
         mRoomInfos = new ArrayList<>();
         mAdapter = new RoomInfoAdapter(getContext(), mRoomInfos);
         mAdapter.setOnItemClickListener(new RoomInfoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String path = BuildUrl.getDouyuDota2Room(mRoomInfos.get(position).getRoomId());
+                String path = BuildUrl.getDouyuRoom(mRoomInfos.get(position).getRoomId());
                 requestStreamPath(path);
             }
         });
@@ -90,7 +109,7 @@ public class LiveFragment extends Fragment {
                 Log.i(TAG, "onErrorResponse: requestStreamPath fail");
             }
         });
-        requestQueue.add(request);
+        mRequestQueue.add(request);
     }
 
     private void setAdapter() {
@@ -114,8 +133,7 @@ public class LiveFragment extends Fragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            String url = BuildUrl.getDouyuDota2SubChannel();
-            StringRequest request = new StringRequest(url,
+            StringRequest request = new StringRequest(mRequestUrl,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -131,7 +149,7 @@ public class LiveFragment extends Fragment {
                     mptrClassicFrameLayout.refreshComplete();
                 }
             });
-            requestQueue.add(request);
+            mRequestQueue.add(request);
         }
     };
 
@@ -144,6 +162,7 @@ public class LiveFragment extends Fragment {
             roomInfo.setRoomId(room.getRoom_id());
             roomInfo.setRoomSrc(room.getRoom_src());
             roomInfo.setRoomName(room.getRoom_name());
+            roomInfo.setNickname(room.getNickname());
             roomInfo.setOnline(room.getOnline());
             mRoomInfos.add(roomInfo);
         }

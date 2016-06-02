@@ -20,6 +20,7 @@ public class GsonSubChannel {
         private int room_id;
         private String room_src;
         private String room_name;
+        private String nickname;
         private int online;
 
         public int getRoom_id() {
@@ -46,6 +47,14 @@ public class GsonSubChannel {
             this.room_name = room_name;
         }
 
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
         public int getOnline() {
             return online;
         }
@@ -57,7 +66,8 @@ public class GsonSubChannel {
         @Override
         public String toString() {
             return "Room [room_id=" + room_id + ", room_src" + room_src +
-                    ", room_name" + room_name + ", setOnline" + online + "]";
+                    ", room_name" + room_name + ", nickname" + nickname +
+                    ", setOnline" + online + "]";
         }
     }
 
