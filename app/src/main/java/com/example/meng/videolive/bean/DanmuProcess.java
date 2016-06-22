@@ -146,7 +146,7 @@ public class DanmuProcess {
         danmaku.padding = 5;
         danmaku.priority = 0;
         danmaku.isLive = islive;
-        danmaku.textSize = 50f * (mParser.getDisplayer().getDensity() - 0.6f);
+        danmaku.textSize = 32;
         danmaku.textColor = Color.WHITE;
         danmaku.time = mDanmakuView.getCurrentTime();
         mDanmakuView.addDanmaku(danmaku);
