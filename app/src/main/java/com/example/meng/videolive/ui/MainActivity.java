@@ -1,46 +1,32 @@
 package com.example.meng.videolive.ui;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTabHost;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.example.meng.videolive.R;
-import com.example.meng.videolive.adapter.PagerAdapter;
 
-public class MainActivity extends AppCompatActivity {
-    private PagerSlidingTabStrip mPagerSlidingTabStrip;
-    private DisplayMetrics dm;
+public class MainActivity extends FragmentActivity {
+
+    private final String mTabSpec[] = {"head", "classify"};
+
+    private final String mIndicator[] = {"首页", "分类"};
+
+    private final Class mFragmentsClass[] = {HeadPagerFragment.class, ClassifyFragment.class};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        if (viewPager != null) {
-            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-            viewPager.setOffscreenPageLimit(4);
-            mPagerSlidingTabStrip.setViewPager(viewPager);
+        FragmentTabHost tabHost = (FragmentTabHost) findViewById(R.id.tab_host);
+        if (tabHost == null) {
+            return;
         }
-        setTabsValue();
-    }
-
-    private void setTabsValue() {
-        dm = getResources().getDisplayMetrics();
-
-        mPagerSlidingTabStrip.setDividerColor(Color.TRANSPARENT);
-        mPagerSlidingTabStrip.setUnderlineHeight((int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 1, dm));
-        mPagerSlidingTabStrip.setIndicatorHeight((int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 4, dm));
-        mPagerSlidingTabStrip.setTextSize((int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, 20, dm));
-        mPagerSlidingTabStrip.setIndicatorColor(Color.parseColor("#45c01a"));
-        mPagerSlidingTabStrip.setTabBackground(0);
+        tabHost.setup(this, getSupportFragmentManager(), R.id.real_tab_content);
+        for (int i = 0; i < mTabSpec.length; i++) {
+            tabHost.addTab(tabHost.newTabSpec(mTabSpec[i]).setIndicator(mIndicator[i]),
+                    mFragmentsClass[i], null);
+        }
     }
 }
