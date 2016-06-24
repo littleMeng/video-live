@@ -77,10 +77,18 @@ public class LiveFragment extends Fragment {
     private void init(View view) {
         mptrClassicFrameLayout = (PtrClassicFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.store_house_ptr_rv);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRequestQueue = Volley.newRequestQueue(getContext());
         mRoomInfos = new ArrayList<>();
         mAdapter = new RoomInfoAdapter(getContext(), mRoomInfos);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        //第一列单独占一行
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return (position == 0) ? gridLayoutManager.getSpanCount() : 1;
+            }
+        });
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRequestQueue = Volley.newRequestQueue(getContext());
         mAdapter.setOnItemClickListener(new RoomInfoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

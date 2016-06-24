@@ -18,6 +18,10 @@ public class BuildUrl {
         return DOUYU_API + "live/3?&limit=20&offset=0";
     }
 
+    public static String getDouyuAllSubChannels() {
+        return DOUYU_API + "getColumnDetail?shortName=game";
+    }
+
     public static String getDouyuLiveSubChannel() {
         return DOUYU_API + "live?&limit=30&offset=0";
     }
