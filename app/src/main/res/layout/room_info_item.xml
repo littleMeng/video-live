@@ -10,11 +10,12 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:layout_marginStart="2dp"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/video_image"/>
 
     <TextView
         android:id="@+id/nickname"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
 
     <TextView
         android:id="@+id/online"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -55,7 +55,7 @@ public class HeadPagerFragment extends Fragment {
         mPagerSlidingTabStrip.setIndicatorHeight((int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 4, dm));
         mPagerSlidingTabStrip.setTextSize((int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, 16, dm));
+                TypedValue.COMPLEX_UNIT_SP, 12, dm));
         mPagerSlidingTabStrip.setIndicatorColor(Color.parseColor("#45c01a"));
         mPagerSlidingTabStrip.setTabBackground(0);
     }
