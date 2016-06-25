@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.bean.BuildUrl;
@@ -24,11 +25,24 @@ public class ChannelActivity extends AppCompatActivity {
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setTitle(channelName);
+            bar.setDisplayHomeAsUpEnabled(true);
         }
         String url = BuildUrl.getDouyuSubChannelBaseTag(channelTag);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.classify_fragment, LiveFragment.newInstance(url));
         transaction.commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
