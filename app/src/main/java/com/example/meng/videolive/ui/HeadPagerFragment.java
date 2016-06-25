@@ -32,7 +32,7 @@ public class HeadPagerFragment extends Fragment {
             ViewPager viewPager = (ViewPager) mView.findViewById(R.id.view_pager);
             if (viewPager != null) {
                 viewPager.setAdapter(new PagerAdapter(getFragmentManager()));
-                viewPager.setOffscreenPageLimit(4);
+                viewPager.setOffscreenPageLimit(1);
                 mPagerSlidingTabStrip.setViewPager(viewPager);
             }
             setTabsValue();

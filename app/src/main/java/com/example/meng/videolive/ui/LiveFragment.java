@@ -39,6 +39,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 public class LiveFragment extends Fragment {
     private static final String TAG = "LIVE_FRAGMENT";
     public static final String ARGUMENT = "argument";
+    private View mView;
     private PtrClassicFrameLayout mptrClassicFrameLayout;
     private RecyclerView mRecyclerView;
     private List<RoomInfo> mRoomInfos;
@@ -66,12 +67,20 @@ public class LiveFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_live, container, false);
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_live, container, false);
+            init(mView);
+            setAdapter();
+            setPtrHandler();
+            mptrClassicFrameLayout.autoRefresh(true);
+        }
 
-        init(view);
-        setAdapter();
-        setPtrHandler();
-        return view;
+        ViewGroup parent = (ViewGroup) mView.getParent();
+        if (parent != null) {
+            parent.removeView(mView);
+        }
+
+        return mView;
     }
 
     private void init(View view) {

@@ -52,6 +52,7 @@ public class ClassifyFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_live, container, false);
             init(mView);
+            mptrClassicFrameLayout.autoRefresh(true);
         }
 
         ViewGroup parent = (ViewGroup) mView.getParent();
