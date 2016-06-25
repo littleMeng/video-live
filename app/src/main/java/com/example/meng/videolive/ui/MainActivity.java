@@ -1,8 +1,8 @@
 package com.example.meng.videolive.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.meng.videolive.R;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private final String mTabSpec[] = {"head", "classify", "heart", "user"};
 

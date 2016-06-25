@@ -37,7 +37,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0:
                 if (mLive == null){
-                    String url = BuildUrl.getDouyuLiveSubChannel();
+                    String url = BuildUrl.getDouyuLiveChannel();
                     mLive = LiveFragment.newInstance(url);
                 }
                 return mLive;

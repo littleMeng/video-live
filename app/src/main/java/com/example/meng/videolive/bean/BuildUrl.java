@@ -22,8 +22,12 @@ public class BuildUrl {
         return DOUYU_API + "getColumnDetail?shortName=game";
     }
 
-    public static String getDouyuLiveSubChannel() {
+    public static String getDouyuLiveChannel() {
         return DOUYU_API + "live?&limit=30&offset=0";
+    }
+
+    public static String getDouyuSubChannelBaseTag(int channelTag) {
+        return DOUYU_API + "live/" + channelTag + "?&limit=20&offset=0";
     }
 
     public static String getDouyuRoom(int roomId) {

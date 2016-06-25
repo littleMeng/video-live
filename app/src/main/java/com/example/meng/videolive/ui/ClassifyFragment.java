@@ -1,11 +1,11 @@
 package com.example.meng.videolive.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +17,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.R;
-import com.example.meng.videolive.adapter.RoomInfoAdapter;
 import com.example.meng.videolive.adapter.SubChannelAdapter;
 import com.example.meng.videolive.bean.BuildUrl;
 import com.example.meng.videolive.bean.GsonAllSubChannels;
-import com.example.meng.videolive.bean.GsonSubChannel;
-import com.example.meng.videolive.bean.RoomInfo;
 import com.example.meng.videolive.bean.SubChannelInfo;
 import com.google.gson.Gson;
 
@@ -70,6 +67,15 @@ public class ClassifyFragment extends Fragment {
         mAdapter = new SubChannelAdapter(getContext(), mSubChannelInfos);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mRequestQueue = Volley.newRequestQueue(getContext());
+        mAdapter.setOnItemClickListener(new SubChannelAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), ChannelActivity.class);
+                intent.putExtra(ChannelActivity.CHANNEL_TAG, mSubChannelInfos.get(position).getTagId());
+                intent.putExtra(ChannelActivity.CHANNEL_NAME, mSubChannelInfos.get(position).getTagName());
+                startActivity(intent);
+            }
+        });
         setAdapter();
         setPtrHandler();
     }
