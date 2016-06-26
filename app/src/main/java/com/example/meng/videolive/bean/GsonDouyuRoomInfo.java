@@ -16,12 +16,32 @@ public class GsonDouyuRoomInfo {
 
     public static class Data {
         private int room_id;
+        private String room_src;
+        private String room_name;
+        private String nickname;
+        private int online;
         private String rtmp_url;
         private String rtmp_live;
         private String hls_url;
 
         public int getRoom_id() {
             return room_id;
+        }
+
+        public String getRoom_src() {
+            return room_src;
+        }
+
+        public int getOnline() {
+            return online;
+        }
+
+        public String getRoom_name() {
+            return room_name;
+        }
+
+        public String getNickname() {
+            return nickname;
         }
 
         public String getRtmp_url() {
@@ -38,8 +58,9 @@ public class GsonDouyuRoomInfo {
 
         @Override
         public String toString() {
-            return "GsonDouyuRoomInfo [rtmp_url" + rtmp_url + ", rtmp_live" + rtmp_live +
-                    ", hls_url" + hls_url + "]";
+            return "GsonDouyuRoomInfo [room_id" + room_id + ", room_src" + room_src +
+                    ", room_name" + room_name + ", online" + online + ", rtmp_url" + rtmp_url
+                    + ", rtmp_live" + rtmp_live + ", hls_url" + hls_url + "]";
         }
     }
 }
