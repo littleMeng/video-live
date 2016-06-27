@@ -44,5 +44,16 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:id="@+id/ib_heart"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:layout_below="@+id/swch_danmu"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="40dp"
+            android:background="@android:color/transparent"/>
     </RelativeLayout>
 </RelativeLayout>

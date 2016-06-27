@@ -35,6 +35,7 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
+        void onItemLongClick(View view, int position);
     }
 
     private OnItemClickListener mOnItemClickListener = null;
@@ -65,12 +66,20 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
     }
 
     private void handleClick(final MyViewHolder holder) {
+        final int position = holder.getLayoutPosition();
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = holder.getLayoutPosition();
                     mOnItemClickListener.onItemClick(holder.itemView, position);
+                }
+            });
+
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mOnItemClickListener.onItemLongClick(holder.itemView, position);
+                    return true;
                 }
             });
         }

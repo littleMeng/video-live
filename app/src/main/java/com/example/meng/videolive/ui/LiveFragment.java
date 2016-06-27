@@ -104,6 +104,11 @@ public class LiveFragment extends Fragment {
                 String path = BuildUrl.getDouyuRoom(mRoomInfos.get(position).getRoomId());
                 requestStreamPath(path);
             }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
         });
     }
 

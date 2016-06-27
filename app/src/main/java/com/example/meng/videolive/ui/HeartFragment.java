@@ -1,9 +1,11 @@
 package com.example.meng.videolive.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -43,6 +45,8 @@ public class HeartFragment extends Fragment {
     private List<RoomInfo> mRoomInfos;
     private RoomInfoAdapter mAdapter;
     private RequestQueue mRequestQueue;
+    private int mDeletePosition;
+    private RoomIdDatabaseHelper mRoomIdDB;
 
     @Nullable
     @Override
@@ -61,6 +65,7 @@ public class HeartFragment extends Fragment {
     }
 
     private void init(View view) {
+        mRoomIdDB = new RoomIdDatabaseHelper(getContext(), RoomIdDatabaseHelper.HEART_DB_NAME, null, 1);
         mptrClassicFrameLayout = (PtrClassicFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.store_house_ptr_rv);
         mRoomInfos = new ArrayList<>();
@@ -74,10 +79,31 @@ public class HeartFragment extends Fragment {
                 String path = BuildUrl.getDouyuRoom(mRoomInfos.get(position).getRoomId());
                 requestStreamPath(path);
             }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                mDeletePosition = position;
+                new AlertDialog.Builder(getContext()).setTitle("收藏")
+                        .setMessage("确认收藏")
+                        .setNegativeButton("否", null)
+                        .setPositiveButton("是", mPositiveClickListener)
+                        .show();
+            }
         });
         setAdapter();
         setPtrHandler();
+        mptrClassicFrameLayout.autoRefresh(true);
     }
+
+    DialogInterface.OnClickListener mPositiveClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            int roomId = mRoomInfos.get(mDeletePosition).getRoomId();
+            mRoomIdDB.deleteRoomId(roomId);
+            mRoomInfos.remove(mRoomInfos.get(mDeletePosition));
+            mAdapter.notifyDataSetChanged();
+        }
+    };
 
     private void requestStreamPath(final String path) {
         StringRequest request = new StringRequest(path,
@@ -123,8 +149,7 @@ public class HeartFragment extends Fragment {
         @Override
         public void run() {
             mRoomInfos.clear();
-            RoomIdDatabaseHelper db = new RoomIdDatabaseHelper(getContext(), RoomIdDatabaseHelper.HEART_DB_NAME, null, 1);
-            List<Integer> roomIds = db.getRoomIds();
+            List<Integer> roomIds = mRoomIdDB.getRoomIds();
             for (int roomId : roomIds) {
                 String path = BuildUrl.getDouyuRoom(roomId);
                 StringRequest request = new StringRequest(path,
@@ -151,6 +176,7 @@ public class HeartFragment extends Fragment {
         Gson gson = new Gson();
         GsonDouyuRoomInfo gsonRoomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
         RoomInfo roomInfo = new RoomInfo();
+        roomInfo.setRoomId(gsonRoomInfo.getData().getRoom_id());
         roomInfo.setNickname(gsonRoomInfo.getData().getNickname());
         roomInfo.setOnline(gsonRoomInfo.getData().getOnline());
         roomInfo.setRoomSrc(gsonRoomInfo.getData().getRoom_src());

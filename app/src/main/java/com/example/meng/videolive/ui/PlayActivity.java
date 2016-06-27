@@ -8,11 +8,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.bean.DanmuProcess;
+import com.example.meng.videolive.db.RoomIdDatabaseHelper;
 
 import io.vov.vitamio.Vitamio;
 import master.flame.danmaku.controller.IDanmakuView;
@@ -22,11 +24,13 @@ public class PlayActivity extends Activity {
     private static final int CONTROL_STAY_TIME = 4000;
     private io.vov.vitamio.widget.VideoView videoView;
     private RelativeLayout mViewControl;
-    private Button mBtnBack;
-    private Switch mDanmuSwitch;
 
     private IDanmakuView mDanmakuView;
     private DanmuProcess mDanmuProcess;
+    private ImageButton mBtnHeart;
+
+    private RoomIdDatabaseHelper mRoomIdDB;
+    private int mRoomId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,11 @@ public class PlayActivity extends Activity {
         Vitamio.isInitialized(this);
         setContentView(R.layout.activity_play);
         hideSystemUI();
-        init();
         String path = getIntent().getStringExtra("PATH");
-        int roomId = getIntent().getIntExtra("ROOM_ID", -1);
+        mRoomId = getIntent().getIntExtra("ROOM_ID", -1);
+        init();
         playVideo(path);
-        playDanmu(roomId);
+        playDanmu();
     }
 
     @Override
@@ -76,11 +80,17 @@ public class PlayActivity extends Activity {
     }
 
     private void init() {
+        Button mBtnBack;
+        Switch mDanmuSwitch;
+
+        mRoomIdDB = new RoomIdDatabaseHelper(getApplicationContext(),
+                RoomIdDatabaseHelper.HEART_DB_NAME, null, 1);
         videoView = (io.vov.vitamio.widget.VideoView) findViewById(R.id.vtm_vv);
         mDanmakuView = (IDanmakuView) findViewById(R.id.danmakuView);
         mViewControl = (RelativeLayout) findViewById(R.id.view_control);
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mDanmuSwitch = (Switch) findViewById(R.id.swch_danmu);
+        mBtnHeart = (ImageButton) findViewById(R.id.ib_heart);
 
         mViewControl.setVisibility(View.INVISIBLE);
         mBtnBack.setOnClickListener(new View.OnClickListener() {
@@ -100,15 +110,35 @@ public class PlayActivity extends Activity {
                 restartHideViewDelay();
             }
         });
+
+        if (mRoomIdDB.getRoomIds().contains(mRoomId)) {
+            mBtnHeart.setImageResource(R.mipmap.ic_heart_press);
+        } else {
+            mBtnHeart.setImageResource(R.mipmap.ic_heart);
+        }
+        mBtnHeart.setOnClickListener(mHeartClickListener);
     }
+
+    View.OnClickListener mHeartClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mRoomIdDB.getRoomIds().contains(mRoomId)) {
+                mRoomIdDB.deleteRoomId(mRoomId);
+                mBtnHeart.setImageResource(R.mipmap.ic_heart);
+            } else {
+                mRoomIdDB.addRoomId(mRoomId);
+                mBtnHeart.setImageResource(R.mipmap.ic_heart_press);
+            }
+        }
+    };
 
     private void restartHideViewDelay() {
         mHandler.removeCallbacks(mRunnable);
         mHandler.postDelayed(mRunnable, CONTROL_STAY_TIME);
     }
 
-    private void playDanmu(int roomId) {
-        mDanmuProcess = new DanmuProcess(this, mDanmakuView, roomId);
+    private void playDanmu() {
+        mDanmuProcess = new DanmuProcess(this, mDanmakuView, mRoomId);
         mDanmuProcess.start();
     }
 
