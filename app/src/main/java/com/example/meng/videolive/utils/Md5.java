@@ -1,4 +1,4 @@
-package com.example.meng.videolive.bean;
+package com.example.meng.videolive.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

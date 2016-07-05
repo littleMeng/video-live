@@ -1,4 +1,4 @@
-package com.example.meng.videolive.bean;
+package com.example.meng.videolive.utils;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.

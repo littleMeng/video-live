@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.meng.videolive.bean.BuildUrl;
 import com.example.meng.videolive.ui.LiveFragment;
+import com.example.meng.videolive.utils.BuildUrl;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.

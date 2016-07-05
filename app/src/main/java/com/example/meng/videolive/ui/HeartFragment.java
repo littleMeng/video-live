@@ -13,18 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.adapter.RoomInfoAdapter;
-import com.example.meng.videolive.bean.BuildUrl;
-import com.example.meng.videolive.bean.GsonDouyuRoomInfo;
 import com.example.meng.videolive.bean.RoomInfo;
 import com.example.meng.videolive.db.RoomIdDatabaseHelper;
-import com.google.gson.Gson;
+import com.example.meng.videolive.listener.NetworkRequest;
+import com.example.meng.videolive.listener.RequestHeartRoomsListener;
+import com.example.meng.videolive.listener.RequestStreamUrlListener;
+import com.example.meng.videolive.model.NetworkRequestImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +40,10 @@ public class HeartFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<RoomInfo> mRoomInfos;
     private RoomInfoAdapter mAdapter;
-    private RequestQueue mRequestQueue;
     private int mDeletePosition;
     private RoomIdDatabaseHelper mRoomIdDB;
+
+    private NetworkRequest mNetworkRequest;
 
     @Nullable
     @Override
@@ -65,6 +62,7 @@ public class HeartFragment extends Fragment {
     }
 
     private void init(View view) {
+        mNetworkRequest = new NetworkRequestImpl(getContext());
         mRoomIdDB = new RoomIdDatabaseHelper(getContext(), RoomIdDatabaseHelper.HEART_DB_NAME, null, 1);
         mptrClassicFrameLayout = (PtrClassicFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.store_house_ptr_rv);
@@ -72,12 +70,10 @@ public class HeartFragment extends Fragment {
         mAdapter = new RoomInfoAdapter(getContext(), mRoomInfos);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRequestQueue = Volley.newRequestQueue(getContext());
         mAdapter.setOnItemClickListener(new RoomInfoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String path = BuildUrl.getDouyuRoom(mRoomInfos.get(position).getRoomId());
-                requestStreamPath(path);
+                mNetworkRequest.getStreamUrl(mRoomInfos.get(position).getRoomId(), mStreamUrlListener);
             }
 
             @Override
@@ -95,6 +91,21 @@ public class HeartFragment extends Fragment {
         mptrClassicFrameLayout.autoRefresh(true);
     }
 
+    private RequestStreamUrlListener mStreamUrlListener = new RequestStreamUrlListener() {
+        @Override
+        public void onSuccess(int roomId, String url) {
+            Intent intent = new Intent(getActivity(), PlayActivity.class);
+            intent.putExtra("PATH", url);
+            intent.putExtra("ROOM_ID", roomId);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onError() {
+            Log.i(TAG, "onErrorResponse: requestStreamPath fail");
+        }
+    };
+
     DialogInterface.OnClickListener mPositiveClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -104,28 +115,6 @@ public class HeartFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
     };
-
-    private void requestStreamPath(final String path) {
-        StringRequest request = new StringRequest(path,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        GsonDouyuRoomInfo roomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
-                        String path = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
-                        Intent intent = new Intent(getActivity(), PlayActivity.class);
-                        intent.putExtra("PATH", path);
-                        intent.putExtra("ROOM_ID", roomInfo.getData().getRoom_id());
-                        startActivity(intent);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "onErrorResponse: requestStreamPath fail");
-            }
-        });
-        mRequestQueue.add(request);
-    }
 
     private void setAdapter() {
         mRecyclerView.setAdapter(mAdapter);
@@ -149,38 +138,21 @@ public class HeartFragment extends Fragment {
         @Override
         public void run() {
             mRoomInfos.clear();
-            List<Integer> roomIds = mRoomIdDB.getRoomIds();
-            for (int roomId : roomIds) {
-                String path = BuildUrl.getDouyuRoom(roomId);
-                StringRequest request = new StringRequest(path,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                handlerResponse(response);
-                                mAdapter.setData(mRoomInfos);
-                                mAdapter.notifyDataSetChanged();
-                                mptrClassicFrameLayout.refreshComplete();
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mptrClassicFrameLayout.refreshComplete();
-                    }
-                });
-                mRequestQueue.add(request);
-            }
+            mNetworkRequest.getHeartRooms(mHeartRoomsListener);
+            mptrClassicFrameLayout.refreshComplete();
         }
     };
 
-    private void handlerResponse(String response){
-        Gson gson = new Gson();
-        GsonDouyuRoomInfo gsonRoomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
-        RoomInfo roomInfo = new RoomInfo();
-        roomInfo.setRoomId(gsonRoomInfo.getData().getRoom_id());
-        roomInfo.setNickname(gsonRoomInfo.getData().getNickname());
-        roomInfo.setOnline(gsonRoomInfo.getData().getOnline());
-        roomInfo.setRoomSrc(gsonRoomInfo.getData().getRoom_src());
+    private RequestHeartRoomsListener mHeartRoomsListener = new RequestHeartRoomsListener() {
+        @Override
+        public void onSuccess(RoomInfo roomInfo) {
+            mRoomInfos.add(roomInfo);
+            mAdapter.notifyDataSetChanged();
+        }
 
-        mRoomInfos.add(roomInfo);
-    }
+        @Override
+        public void onError() {
+
+        }
+    };
 }

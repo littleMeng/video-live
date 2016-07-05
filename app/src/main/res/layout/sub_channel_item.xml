@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.meng.videolive.bean.SquareLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.meng.videolive.utils.SquareLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center">
@@ -14,4 +14,4 @@
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-</com.example.meng.videolive.bean.SquareLinearLayout>
+</com.example.meng.videolive.utils.SquareLinearLayout>

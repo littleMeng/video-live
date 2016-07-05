@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.meng.videolive.R;
-import com.example.meng.videolive.bean.BuildUrl;
+import com.example.meng.videolive.utils.BuildUrl;
 
 public class ChannelActivity extends AppCompatActivity {
     private static final String TAG = "ChannelActivity";

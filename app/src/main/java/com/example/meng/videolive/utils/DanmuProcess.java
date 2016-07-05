@@ -1,4 +1,4 @@
-package com.example.meng.videolive.bean;
+package com.example.meng.videolive.utils;
 
 import android.content.Context;
 import android.graphics.Color;

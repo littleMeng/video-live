@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import com.example.meng.videolive.R;
-import com.example.meng.videolive.bean.DanmuProcess;
 import com.example.meng.videolive.db.RoomIdDatabaseHelper;
+import com.example.meng.videolive.utils.DanmuProcess;
 
 import io.vov.vitamio.Vitamio;
 import master.flame.danmaku.controller.IDanmakuView;

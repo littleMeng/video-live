@@ -12,8 +12,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.R;
-import com.example.meng.videolive.bean.BitmapCache;
 import com.example.meng.videolive.bean.SubChannelInfo;
+import com.example.meng.videolive.utils.BitmapCache;
 
 import java.util.List;
 

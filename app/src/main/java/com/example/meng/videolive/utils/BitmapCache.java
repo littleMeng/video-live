@@ -1,4 +1,4 @@
-package com.example.meng.videolive.bean;
+package com.example.meng.videolive.utils;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;

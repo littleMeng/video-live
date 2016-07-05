@@ -12,18 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.adapter.RoomInfoAdapter;
-import com.example.meng.videolive.bean.BuildUrl;
-import com.example.meng.videolive.bean.GsonDouyuRoomInfo;
-import com.example.meng.videolive.bean.GsonSubChannel;
 import com.example.meng.videolive.bean.RoomInfo;
-import com.google.gson.Gson;
+import com.example.meng.videolive.listener.NetworkRequest;
+import com.example.meng.videolive.listener.RequestStreamUrlListener;
+import com.example.meng.videolive.listener.RequestSubChannelListener;
+import com.example.meng.videolive.model.NetworkRequestImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +39,9 @@ public class LiveFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<RoomInfo> mRoomInfos;
     private RoomInfoAdapter mAdapter;
-    private RequestQueue mRequestQueue;
     private String mRequestUrl;
+
+    private NetworkRequest mNetworkRequest;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +80,7 @@ public class LiveFragment extends Fragment {
     }
 
     private void init(View view) {
+        mNetworkRequest = new NetworkRequestImpl(getContext());
         mptrClassicFrameLayout = (PtrClassicFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.store_house_ptr_rv);
         mRoomInfos = new ArrayList<>();
@@ -97,12 +94,10 @@ public class LiveFragment extends Fragment {
             }
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRequestQueue = Volley.newRequestQueue(getContext());
         mAdapter.setOnItemClickListener(new RoomInfoAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String path = BuildUrl.getDouyuRoom(mRoomInfos.get(position).getRoomId());
-                requestStreamPath(path);
+                mNetworkRequest.getStreamUrl(mRoomInfos.get(position).getRoomId(), mStreamUrlListener);
             }
 
             @Override
@@ -112,27 +107,21 @@ public class LiveFragment extends Fragment {
         });
     }
 
-    private void requestStreamPath(final String path) {
-        StringRequest request = new StringRequest(path,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        GsonDouyuRoomInfo roomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
-                        String path = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
-                        Intent intent = new Intent(getActivity(), PlayActivity.class);
-                        intent.putExtra("PATH", path);
-                        intent.putExtra("ROOM_ID", roomInfo.getData().getRoom_id());
-                        startActivity(intent);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "onErrorResponse: requestStreamPath fail");
-            }
-        });
-        mRequestQueue.add(request);
-    }
+    private RequestStreamUrlListener mStreamUrlListener = new RequestStreamUrlListener() {
+        @Override
+        public void onSuccess(int roomId, String url) {
+            Intent intent = new Intent(getActivity(), PlayActivity.class);
+            intent.putExtra("PATH", url);
+            intent.putExtra("ROOM_ID", roomId);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onError() {
+            Log.i(TAG, "onErrorResponse: requestStreamPath fail");
+        }
+    };
+
 
     private void setAdapter() {
         mRecyclerView.setAdapter(mAdapter);
@@ -155,38 +144,23 @@ public class LiveFragment extends Fragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            StringRequest request = new StringRequest(mRequestUrl,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            handlerResponse(response);
-                            mAdapter.setData(mRoomInfos);
-                            mAdapter.notifyDataSetChanged();
-                            mptrClassicFrameLayout.refreshComplete();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
-                    mptrClassicFrameLayout.refreshComplete();
-                }
-            });
-            mRequestQueue.add(request);
+            mNetworkRequest.getSubChannel(mRequestUrl, mSubChannelListener);
         }
     };
 
-    private void handlerResponse(String response){
-        Gson gson = new Gson();
-        mRoomInfos.clear();
-        GsonSubChannel subChannel = gson.fromJson(response, GsonSubChannel.class);
-        for (GsonSubChannel.Room room : subChannel.getData()) {
-            RoomInfo roomInfo = new RoomInfo();
-            roomInfo.setRoomId(room.getRoom_id());
-            roomInfo.setRoomSrc(room.getRoom_src());
-            roomInfo.setRoomName(room.getRoom_name());
-            roomInfo.setNickname(room.getNickname());
-            roomInfo.setOnline(room.getOnline());
-            mRoomInfos.add(roomInfo);
+    private RequestSubChannelListener mSubChannelListener = new RequestSubChannelListener() {
+        @Override
+        public void onSuccess(List<RoomInfo> roomInfos) {
+            mRoomInfos.clear();
+            mRoomInfos.addAll(roomInfos);
+            mAdapter.notifyDataSetChanged();
+            mptrClassicFrameLayout.refreshComplete();
         }
-    }
+
+        @Override
+        public void onError() {
+            Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+            mptrClassicFrameLayout.refreshComplete();
+        }
+    };
 }

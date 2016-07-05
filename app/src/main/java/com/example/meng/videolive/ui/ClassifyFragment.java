@@ -11,17 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.adapter.SubChannelAdapter;
-import com.example.meng.videolive.bean.BuildUrl;
-import com.example.meng.videolive.bean.GsonAllSubChannels;
 import com.example.meng.videolive.bean.SubChannelInfo;
-import com.google.gson.Gson;
+import com.example.meng.videolive.listener.NetworkRequest;
+import com.example.meng.videolive.listener.RequestAllSubChannelsListener;
+import com.example.meng.videolive.model.NetworkRequestImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +36,8 @@ public class ClassifyFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<SubChannelInfo> mSubChannelInfos;
     private SubChannelAdapter mAdapter;
-    private RequestQueue mRequestQueue;
+
+    private NetworkRequest mNetworkRequest;
 
     @Nullable
     @Override
@@ -61,12 +57,12 @@ public class ClassifyFragment extends Fragment {
     }
 
     private void init(View view) {
+        mNetworkRequest = new NetworkRequestImpl(getContext());
         mptrClassicFrameLayout = (PtrClassicFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.store_house_ptr_rv);
         mSubChannelInfos = new ArrayList<>();
         mAdapter = new SubChannelAdapter(getContext(), mSubChannelInfos);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        mRequestQueue = Volley.newRequestQueue(getContext());
         mAdapter.setOnItemClickListener(new SubChannelAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -101,38 +97,23 @@ public class ClassifyFragment extends Fragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            String url = BuildUrl.getDouyuAllSubChannels();
-            StringRequest request = new StringRequest(url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            handlerResponse(response);
-                            mAdapter.setmSubChannelInfos(mSubChannelInfos);
-                            mAdapter.notifyDataSetChanged();
-                            mptrClassicFrameLayout.refreshComplete();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
-                    mptrClassicFrameLayout.refreshComplete();
-                }
-            });
-            mRequestQueue.add(request);
+            mNetworkRequest.getAllSubChannels(mAllSubChannelsListener);
         }
     };
 
-    private void handlerResponse(String response){
-        Gson gson = new Gson();
-        mSubChannelInfos.clear();
-        GsonAllSubChannels allSubChannel = gson.fromJson(response, GsonAllSubChannels.class);
-        for (GsonAllSubChannels.Data gsonData : allSubChannel.getData()) {
-            SubChannelInfo subChannelInfo = new SubChannelInfo();
-            subChannelInfo.setTagId(gsonData.getTag_id());
-            subChannelInfo.setTagName(gsonData.getTag_name());
-            subChannelInfo.setIconUrl(gsonData.getIcon_url());
-
-            mSubChannelInfos.add(subChannelInfo);
+    private RequestAllSubChannelsListener mAllSubChannelsListener = new RequestAllSubChannelsListener() {
+        @Override
+        public void onSuccess(List<SubChannelInfo> subChannelInfos) {
+            mSubChannelInfos.clear();
+            mSubChannelInfos.addAll(subChannelInfos);
+            mAdapter.notifyDataSetChanged();
+            mptrClassicFrameLayout.refreshComplete();
         }
-    }
+
+        @Override
+        public void onError() {
+            Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+            mptrClassicFrameLayout.refreshComplete();
+        }
+    };
 }
