@@ -1,6 +1,7 @@
 package com.example.meng.videolive.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,6 +29,7 @@ import java.util.List;
  * Created by uspai.taobao.com on 2016/7/5.
  */
 public class NetworkRequestImpl implements NetworkRequest {
+    private static final String TAG = "NetworkRequestImpl";
     private Context mContext;
     private List<RoomInfo> mRoomInfos;
     private List<SubChannelInfo> mSubChannelInfos;
@@ -63,15 +65,19 @@ public class NetworkRequestImpl implements NetworkRequest {
     private void handlerSunChannelResponse(String response){
         Gson gson = new Gson();
         mRoomInfos.clear();
-        GsonSubChannel subChannel = gson.fromJson(response, GsonSubChannel.class);
-        for (GsonSubChannel.Room room : subChannel.getData()) {
-            RoomInfo roomInfo = new RoomInfo();
-            roomInfo.setRoomId(room.getRoom_id());
-            roomInfo.setRoomSrc(room.getRoom_src());
-            roomInfo.setRoomName(room.getRoom_name());
-            roomInfo.setNickname(room.getNickname());
-            roomInfo.setOnline(room.getOnline());
-            mRoomInfos.add(roomInfo);
+        try {
+            GsonSubChannel subChannel = gson.fromJson(response, GsonSubChannel.class);
+            for (GsonSubChannel.Room room : subChannel.getData()) {
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.setRoomId(room.getRoom_id());
+                roomInfo.setRoomSrc(room.getRoom_src());
+                roomInfo.setRoomName(room.getRoom_name());
+                roomInfo.setNickname(room.getNickname());
+                roomInfo.setOnline(room.getOnline());
+                mRoomInfos.add(roomInfo);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "handlerSunChannelResponse: subChannel is null", e);
         }
     }
 
@@ -83,9 +89,13 @@ public class NetworkRequestImpl implements NetworkRequest {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        GsonDouyuRoomInfo roomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
-                        String url = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
-                        listener.onSuccess(roomId, url);
+                        try {
+                            GsonDouyuRoomInfo roomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
+                            String url = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
+                            listener.onSuccess(roomId, url);
+                        } catch (Exception e) {
+                            Log.e(TAG, "onResponse: roomInfo is null", e);
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -118,14 +128,18 @@ public class NetworkRequestImpl implements NetworkRequest {
     private void handlerAllSubChannelsResponse(String response){
         Gson gson = new Gson();
         mSubChannelInfos.clear();
-        GsonAllSubChannels allSubChannel = gson.fromJson(response, GsonAllSubChannels.class);
-        for (GsonAllSubChannels.Data gsonData : allSubChannel.getData()) {
-            SubChannelInfo subChannelInfo = new SubChannelInfo();
-            subChannelInfo.setTagId(gsonData.getTag_id());
-            subChannelInfo.setTagName(gsonData.getTag_name());
-            subChannelInfo.setIconUrl(gsonData.getIcon_url());
+        try {
+            GsonAllSubChannels allSubChannel = gson.fromJson(response, GsonAllSubChannels.class);
+            for (GsonAllSubChannels.Data gsonData : allSubChannel.getData()) {
+                SubChannelInfo subChannelInfo = new SubChannelInfo();
+                subChannelInfo.setTagId(gsonData.getTag_id());
+                subChannelInfo.setTagName(gsonData.getTag_name());
+                subChannelInfo.setIconUrl(gsonData.getIcon_url());
 
-            mSubChannelInfos.add(subChannelInfo);
+                mSubChannelInfos.add(subChannelInfo);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "handlerAllSubChannelsResponse: allSubChannel is null", e);
         }
     }
 
@@ -140,7 +154,9 @@ public class NetworkRequestImpl implements NetworkRequest {
                         @Override
                         public void onResponse(String response) {
                             RoomInfo roomInfo = handlerHeartRoomsResponse(response);
-                            listener.onSuccess(roomInfo);
+                            if (roomInfo != null) {
+                                listener.onSuccess(roomInfo);
+                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -154,13 +170,17 @@ public class NetworkRequestImpl implements NetworkRequest {
 
     private RoomInfo handlerHeartRoomsResponse(String response){
         Gson gson = new Gson();
-        GsonDouyuRoomInfo gsonRoomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
-        RoomInfo roomInfo = new RoomInfo();
-        roomInfo.setRoomId(gsonRoomInfo.getData().getRoom_id());
-        roomInfo.setNickname(gsonRoomInfo.getData().getNickname());
-        roomInfo.setOnline(gsonRoomInfo.getData().getOnline());
-        roomInfo.setRoomSrc(gsonRoomInfo.getData().getRoom_src());
-
-        return roomInfo;
+        try {
+            GsonDouyuRoomInfo gsonRoomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
+            RoomInfo roomInfo = new RoomInfo();
+            roomInfo.setRoomId(gsonRoomInfo.getData().getRoom_id());
+            roomInfo.setNickname(gsonRoomInfo.getData().getNickname());
+            roomInfo.setOnline(gsonRoomInfo.getData().getOnline());
+            roomInfo.setRoomSrc(gsonRoomInfo.getData().getRoom_src());
+            return roomInfo;
+        } catch (Exception e) {
+            Log.e(TAG, "handlerHeartRoomsResponse: gsonRoomInfo is error", e);
+        }
+        return null;
     }
 }

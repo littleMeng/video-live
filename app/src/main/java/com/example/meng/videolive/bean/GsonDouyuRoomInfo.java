@@ -4,6 +4,8 @@ package com.example.meng.videolive.bean;
  * Created by 小萌神_0 on 2016/5/28.
  */
 public class GsonDouyuRoomInfo {
+    private int error;
+
     private Data data;
 
     public Data getData() {
@@ -12,6 +14,14 @@ public class GsonDouyuRoomInfo {
 
     public void setData(Data data) {
         this.data = data;
+    }
+
+    public int getError() {
+        return error;
+    }
+
+    public void setError(int error) {
+        this.error = error;
     }
 
     public static class Data {
