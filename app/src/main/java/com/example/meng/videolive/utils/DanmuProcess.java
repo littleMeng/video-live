@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.example.meng.videolive.douyuDanmu.client.DyBulletScreenClient;
-import com.example.meng.videolive.douyuDanmu.utils.KeepAlive;
-import com.example.meng.videolive.douyuDanmu.utils.KeepGetMsg;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -118,13 +116,14 @@ public class DanmuProcess {
                 int groupId = -9999;
                 mDanmuClient = DyBulletScreenClient.getInstance();
                 //设置需要连接和访问的房间ID，以及弹幕池分组号
-                mDanmuClient.init(mRoomId, groupId);
-
-                KeepAlive keepAlive = new KeepAlive();
-                keepAlive.start();
-
-                KeepGetMsg keepGetMsg = new KeepGetMsg();
-                keepGetMsg.start();
+                mDanmuClient.start(mRoomId, groupId);
+//                mDanmuClient.init(mRoomId, groupId);
+//
+//                KeepAlive keepAlive = new KeepAlive();
+//                keepAlive.start();
+//
+//                KeepGetMsg keepGetMsg = new KeepGetMsg();
+//                keepGetMsg.start();
 
                 mDanmuClient.setmHandleMsgListener(new DyBulletScreenClient.HandleMsgListener() {
                     @Override
@@ -154,6 +153,6 @@ public class DanmuProcess {
 
     public void finish() {
         //停止从服务器获取弹幕
-        mDanmuClient.unInit();
+        mDanmuClient.stop();
     }
 }

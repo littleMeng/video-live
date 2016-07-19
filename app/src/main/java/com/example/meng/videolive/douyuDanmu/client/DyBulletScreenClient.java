@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.meng.videolive.douyuDanmu.msg.DyMessage;
 import com.example.meng.videolive.douyuDanmu.msg.MsgView;
+import com.example.meng.videolive.douyuDanmu.utils.KeepAlive;
+import com.example.meng.videolive.douyuDanmu.utils.KeepGetMsg;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -62,6 +64,16 @@ public class DyBulletScreenClient {
         return mHandleMsgListener == null;
     }
 
+    public void start(int roomId, int groupId) {
+        init(roomId, groupId);
+
+        KeepAlive keepAlive = new KeepAlive();
+        keepAlive.start();
+
+        KeepGetMsg keepGetMsg = new KeepGetMsg();
+        keepGetMsg.start();
+    }
+
     /**
      * 客户端初始化，连接弹幕服务器并登陆房间及弹幕池
      * @param roomId 房间ID
@@ -76,6 +88,10 @@ public class DyBulletScreenClient {
         this.joinGroup(roomId, groupId);
         //设置客户端就绪标记为就绪状态
         readyFlag = true;
+    }
+
+    public void stop() {
+        unInit();
     }
 
     public void unInit() {
