@@ -1,5 +1,9 @@
 package com.example.meng.videolive.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Created by 小萌神_0 on 2016/5/27.
  */
@@ -35,5 +39,26 @@ public class BuildUrl {
         String commmon = "room/" + roomId + "?aid=android&cdn=ws&client_sys=android&time=" + time;
         String auth = Md5.strToMd5Low32(commmon + "1231");
         return DOUYU_API + commmon + "&auth=" + auth;
+    }
+
+    public static String getDouyuRoomUrl(int roomId) {
+        return "http://www.douyu.com/lapi/live/getPlay/" + roomId;
+    }
+
+    public static Map<String, String> getDouyuRoomParams(int roomId) {
+        Map<String, String> map = new HashMap<>();
+        long time = System.currentTimeMillis()/(1000*60);
+        String did = UUID.randomUUID().toString().toUpperCase();
+        did = did.replace("-", "");
+        String str = roomId + did + "A12Svb&%1UUmf@hC" + time;
+        String sign = Md5.strToMd5Low32(str);
+
+        map.put("cdn", "ws");
+        map.put("rate", "0");
+        map.put("tt", String.valueOf(time));
+        map.put("did", did);
+        map.put("sign", sign);
+
+        return map;
     }
 }

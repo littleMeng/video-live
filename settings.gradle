@@ -1,1 +1,1 @@
-include ':app', ':vitamio', ':vitamio-sample'
+include ':app', ':InitActivity'

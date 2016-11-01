@@ -3,12 +3,15 @@ package com.example.meng.videolive.model;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.bean.GsonAllSubChannels;
+import com.example.meng.videolive.bean.GsonDouyuRoom;
 import com.example.meng.videolive.bean.GsonDouyuRoomInfo;
 import com.example.meng.videolive.bean.GsonSubChannel;
 import com.example.meng.videolive.bean.RoomInfo;
@@ -24,6 +27,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by uspai.taobao.com on 2016/7/5.
@@ -83,14 +87,15 @@ public class NetworkRequestImpl implements NetworkRequest {
 
     @Override
     public void getStreamUrl(final int roomId, final RequestStreamUrlListener listener) {
-        String path = BuildUrl.getDouyuRoom(roomId);
-        StringRequest request = new StringRequest(path,
+        String url = BuildUrl.getDouyuRoomUrl(roomId);
+        StringRequest request = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.i(TAG, response);
                         Gson gson = new Gson();
                         try {
-                            GsonDouyuRoomInfo roomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
+                            GsonDouyuRoom roomInfo = gson.fromJson(response, GsonDouyuRoom.class);
                             String url = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
                             listener.onSuccess(roomId, url);
                         } catch (Exception e) {
@@ -102,7 +107,13 @@ public class NetworkRequestImpl implements NetworkRequest {
             public void onErrorResponse(VolleyError error) {
                 listener.onError();
             }
-        });
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return BuildUrl.getDouyuRoomParams(roomId);
+            }
+        };
+
         mRequestQueue.add(request);
     }
 
@@ -147,25 +158,25 @@ public class NetworkRequestImpl implements NetworkRequest {
     public void getHeartRooms(final RequestHeartRoomsListener listener) {
         mRequestQueue.cancelAll(null);
         List<Integer> roomIds = mRoomIdDB.getRoomIds();
-        for (int roomId : roomIds) {
-            String path = BuildUrl.getDouyuRoom(roomId);
-            StringRequest request = new StringRequest(path,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            RoomInfo roomInfo = handlerHeartRoomsResponse(response);
-                            if (roomInfo != null) {
-                                listener.onSuccess(roomInfo);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    listener.onError();
-                }
-            });
-            mRequestQueue.add(request);
-        }
+//        for (int roomId : roomIds) {
+//            String path = BuildUrl.getDouyuRoom(roomId);
+//            StringRequest request = new StringRequest(path,
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            RoomInfo roomInfo = handlerHeartRoomsResponse(response);
+//                            if (roomInfo != null) {
+//                                listener.onSuccess(roomInfo);
+//                            }
+//                        }
+//                    }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    listener.onError();
+//                }
+//            });
+//            mRequestQueue.add(request);
+//        }
     }
 
     private RoomInfo handlerHeartRoomsResponse(String response){
