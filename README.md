@@ -1,9 +1,9 @@
-#斗鱼官方获取直播源地址API变动了，暂时无法观看视频
+#斗鱼官方获取直播源地址API加密算法更新了，需重新下载代码编译/apk安装，才能观看视频
 
 #video-live
 
 ###项目介绍
-视频直播源从斗鱼接口抓取，直播源分析来自[斗鱼API](http://430.io/-xie-dou-yu-tv-web-api-some-douyutv-api/)，其中利用到的MD5加密分析来自[MD5](https://github.com/0987363/douyutv-fix/blob/3dd6b9762a4cf5d359170b4a912457a0d4b5f5e5/DouYu-kodi-fix/APIHelper.py)，斗鱼弹幕提供官方API，具体实现是从斗鱼官网提供的java版本修改得到（TextUtils替换StringUtils、添加弹幕消息处理接口），视频播放器使用[vitamio](https://www.vitamio.org/)，弹幕实现使用[弹幕烈焰使](https://github.com/Bilibili/DanmakuFlameMaster)。[点击此处下载apk安装文件](https://github.com/littleMeng/video-live/raw/master/app-debug.apk)。
+视频直播源从斗鱼接口抓取，直播源分析来自[斗鱼API](https://github.com/soimort/you-get/blob/0984190f93bd0b5c55748c41ca657d1ba6bf5a6b/src/you_get/extractors/douyutv.py)，斗鱼弹幕提供官方API，具体实现是从斗鱼官网提供的java版本修改得到（TextUtils替换StringUtils、添加弹幕消息处理接口），视频播放器使用[vitamio](https://www.vitamio.org/)，弹幕实现使用[弹幕烈焰使](https://github.com/Bilibili/DanmakuFlameMaster)。[点击此处下载apk安装文件](https://github.com/littleMeng/video-live/raw/master/app-debug.apk)。
 
 ---
 
@@ -42,11 +42,11 @@
 
 ###具体功能
 * 直播页面——下拉刷新，返回20条直播页面信息，点击进入指定房间开始视频直播，显示弹幕
-* 收藏感兴趣房间
 
 ###TODO
 * 引入mvp框架
 * README.md增加示例动态图
+* 收藏感兴趣房间
 
 ###依赖
 ```java
