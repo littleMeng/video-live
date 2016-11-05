@@ -35,10 +35,7 @@ public class BuildUrl {
     }
 
     public static String getDouyuRoom(int roomId) {
-        long time = System.currentTimeMillis()/1000;
-        String commmon = "room/" + roomId + "?aid=android&cdn=ws&client_sys=android&time=" + time;
-        String auth = Md5.strToMd5Low32(commmon + "1231");
-        return DOUYU_API + commmon + "&auth=" + auth;
+        return "http://capi.douyucdn.cn/api/v1/searchNew/" + roomId + "/1?limit=1&offset=0";
     }
 
     public static String getDouyuRoomUrl(int roomId) {

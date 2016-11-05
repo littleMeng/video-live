@@ -43,7 +43,7 @@ public class GsonDouyuRoom {
 
         @Override
         public String toString() {
-            return "GsonDouyuRoom [room_id" + room_id + ", rtmp_url" + rtmp_url + ", rtmp_live"
+            return "GsonDouyuRoom [room_id=" + room_id + ", rtmp_url=" + rtmp_url + ", rtmp_live="
                     + rtmp_live + "]";
         }
     }

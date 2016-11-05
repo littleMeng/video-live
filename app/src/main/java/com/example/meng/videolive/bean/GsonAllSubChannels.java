@@ -31,13 +31,13 @@ public class GsonAllSubChannels {
 
         @Override
         public String toString() {
-            return "Data [tag_id" + tag_id + ", tag_name"
-                    + tag_name + ", icon_url" + icon_url + "]";
+            return "Data [tag_id=" + tag_id + ", tag_name="
+                    + tag_name + ", icon_url=" + icon_url + "]";
         }
     }
 
     @Override
     public String toString() {
-        return "GsonAllSubChannels [data" + data + "]";
+        return "GsonAllSubChannels [data=" + data + "]";
     }
 }

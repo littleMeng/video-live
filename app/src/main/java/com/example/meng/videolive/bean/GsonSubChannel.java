@@ -41,14 +41,14 @@ public class GsonSubChannel {
 
         @Override
         public String toString() {
-            return "Room [room_id=" + room_id + ", room_src" + room_src +
-                    ", room_name" + room_name + ", nickname" + nickname +
-                    ", setOnline" + online + "]";
+            return "Room [room_id=" + room_id + ", room_src=" + room_src +
+                    ", room_name=" + room_name + ", nickname=" + nickname +
+                    ", setOnline=" + online + "]";
         }
     }
 
     @Override
     public String toString() {
-        return "GsonSubChannel [data" + data + "]";
+        return "GsonSubChannel [data=" + data + "]";
     }
 }

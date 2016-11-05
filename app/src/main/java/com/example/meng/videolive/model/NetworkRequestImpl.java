@@ -158,36 +158,40 @@ public class NetworkRequestImpl implements NetworkRequest {
     public void getHeartRooms(final RequestHeartRoomsListener listener) {
         mRequestQueue.cancelAll(null);
         List<Integer> roomIds = mRoomIdDB.getRoomIds();
-//        for (int roomId : roomIds) {
-//            String path = BuildUrl.getDouyuRoom(roomId);
-//            StringRequest request = new StringRequest(path,
-//                    new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            RoomInfo roomInfo = handlerHeartRoomsResponse(response);
-//                            if (roomInfo != null) {
-//                                listener.onSuccess(roomInfo);
-//                            }
-//                        }
-//                    }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    listener.onError();
-//                }
-//            });
-//            mRequestQueue.add(request);
-//        }
+        for (int roomId : roomIds) {
+            String url = BuildUrl.getDouyuRoom(roomId);
+            StringRequest request = new StringRequest(url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            RoomInfo roomInfo = handlerHeartRoomsResponse(response);
+                            if (roomInfo != null) {
+                                listener.onSuccess(roomInfo);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    listener.onError();
+                }
+            });
+            mRequestQueue.add(request);
+        }
     }
 
     private RoomInfo handlerHeartRoomsResponse(String response){
         Gson gson = new Gson();
         try {
-            GsonDouyuRoomInfo gsonRoomInfo = gson.fromJson(response, GsonDouyuRoomInfo.class);
+            GsonDouyuRoomInfo subChannel = gson.fromJson(response, GsonDouyuRoomInfo.class);
+            GsonSubChannel.Room room = subChannel.getData().getRoom().get(0);
             RoomInfo roomInfo = new RoomInfo();
-            roomInfo.setRoomId(gsonRoomInfo.getData().getRoom_id());
-            roomInfo.setNickname(gsonRoomInfo.getData().getNickname());
-            roomInfo.setOnline(gsonRoomInfo.getData().getOnline());
-            roomInfo.setRoomSrc(gsonRoomInfo.getData().getRoom_src());
+            roomInfo.setRoomId(room.getRoom_id());
+            roomInfo.setRoomSrc(room.getRoom_src());
+            roomInfo.setRoomName(room.getRoom_name());
+            roomInfo.setNickname(room.getNickname());
+            roomInfo.setOnline(room.getOnline());
+            mRoomInfos.add(roomInfo);
+
             return roomInfo;
         } catch (Exception e) {
             Log.e(TAG, "handlerHeartRoomsResponse: gsonRoomInfo is error", e);

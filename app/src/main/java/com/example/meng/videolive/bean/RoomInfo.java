@@ -50,4 +50,10 @@ public class RoomInfo {
     public void setOnline(int online) {
         this.online = online;
     }
+
+    @Override
+    public String toString() {
+        return "RoomInfo [roomId=" + roomId + ", roomSrc=" + roomSrc + ", roomName=" + roomName
+                + ", nickname=" + nickname + ", online=" + online + "]";
+    }
 }
