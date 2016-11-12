@@ -42,18 +42,17 @@
 
 ###具体功能
 * 直播页面——下拉刷新，返回20条直播页面信息，点击进入指定房间开始视频直播，显示弹幕
+* 收藏感兴趣房间
 
 ###TODO
 * 引入mvp框架
-* README.md增加示例动态图
-* 收藏感兴趣房间
 
 ###依赖
 ```java
     dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile project(path: ':vitamio')
+    compile project(path: ':InitActivity')
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'com.mcxiaoke.volley:library:1.0.19'
