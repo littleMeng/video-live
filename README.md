@@ -39,6 +39,7 @@
 ###功能
 * 斗鱼综合、dota2、LOL、炉石频道直播聚合
 * 对应房间弹幕显示
+* 输入关键字搜索房间
 
 ###具体功能
 * 直播页面——下拉刷新，返回20条直播页面信息，点击进入指定房间开始视频直播，显示弹幕
@@ -64,6 +65,7 @@
     compile 'com.android.support:support-v4:23.4.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.android.support:design:23.4.0'
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }
 ```
 

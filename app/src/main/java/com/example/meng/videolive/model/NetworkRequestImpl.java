@@ -35,27 +35,33 @@ import java.util.Map;
 public class NetworkRequestImpl implements NetworkRequest {
     private static final String TAG = "NetworkRequestImpl";
     private Context mContext;
-    private List<RoomInfo> mRoomInfos;
-    private List<SubChannelInfo> mSubChannelInfos;
     private RequestQueue mRequestQueue;
     private RoomIdDatabaseHelper mRoomIdDB;
 
     public NetworkRequestImpl(Context context) {
         this.mContext = context;
-        mRoomInfos = new ArrayList<>();
-        mSubChannelInfos = new ArrayList<>();
         mRequestQueue = Volley.newRequestQueue(context);
         mRoomIdDB = new RoomIdDatabaseHelper(context, RoomIdDatabaseHelper.HEART_DB_NAME, null, 1);
     }
 
+    private Boolean isSearchUrl(String url) {
+        return url.contains("mobileSearch");
+    }
+
     @Override
     public void getSubChannel(String url, final RequestSubChannelListener listener) {
+        final String urlTemp = url;
         StringRequest request = new StringRequest(url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        handlerSunChannelResponse(response);
-                        listener.onSuccess(mRoomInfos);
+                        List<RoomInfo> roomInfos;
+                        if (isSearchUrl(urlTemp)) {
+                            roomInfos = handleSearchResponse(response);
+                        } else {
+                            roomInfos = handlerSubChannelResponse(response);
+                        }
+                        listener.onSuccess(roomInfos);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -66,9 +72,29 @@ public class NetworkRequestImpl implements NetworkRequest {
         mRequestQueue.add(request);
     }
 
-    private void handlerSunChannelResponse(String response){
+    private List<RoomInfo> handleSearchResponse(String response) {
         Gson gson = new Gson();
-        mRoomInfos.clear();
+        List<RoomInfo> roomInfos = new ArrayList<>();
+        try {
+            GsonDouyuRoomInfo subChannel = gson.fromJson(response, GsonDouyuRoomInfo.class);
+            for (GsonSubChannel.Room room : subChannel.getData().getRoom()) {
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.setRoomId(room.getRoom_id());
+                roomInfo.setRoomSrc(room.getRoomSrc());
+                roomInfo.setRoomName(room.getRoom_name());
+                roomInfo.setNickname(room.getNickname());
+                roomInfo.setOnline(room.getOnline());
+                roomInfos.add(roomInfo);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "handlerSunChannelResponse: subChannel is null", e);
+        }
+        return roomInfos;
+    }
+
+    private List<RoomInfo> handlerSubChannelResponse(String response){
+        Gson gson = new Gson();
+        List<RoomInfo> roomInfos = new ArrayList<>();
         try {
             GsonSubChannel subChannel = gson.fromJson(response, GsonSubChannel.class);
             for (GsonSubChannel.Room room : subChannel.getData()) {
@@ -78,11 +104,12 @@ public class NetworkRequestImpl implements NetworkRequest {
                 roomInfo.setRoomName(room.getRoom_name());
                 roomInfo.setNickname(room.getNickname());
                 roomInfo.setOnline(room.getOnline());
-                mRoomInfos.add(roomInfo);
+                roomInfos.add(roomInfo);
             }
         } catch (Exception e) {
             Log.e(TAG, "handlerSunChannelResponse: subChannel is null", e);
         }
+        return roomInfos;
     }
 
     @Override
@@ -124,8 +151,8 @@ public class NetworkRequestImpl implements NetworkRequest {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        handlerAllSubChannelsResponse(response);
-                        listener.onSuccess(mSubChannelInfos);
+                        List<SubChannelInfo> subChannelInfos = handlerAllSubChannelsResponse(response);
+                        listener.onSuccess(subChannelInfos);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -136,9 +163,9 @@ public class NetworkRequestImpl implements NetworkRequest {
         mRequestQueue.add(request);
     }
 
-    private void handlerAllSubChannelsResponse(String response){
+    private List<SubChannelInfo> handlerAllSubChannelsResponse(String response){
+        List<SubChannelInfo> subChannelInfos = new ArrayList<>();
         Gson gson = new Gson();
-        mSubChannelInfos.clear();
         try {
             GsonAllSubChannels allSubChannel = gson.fromJson(response, GsonAllSubChannels.class);
             for (GsonAllSubChannels.Data gsonData : allSubChannel.getData()) {
@@ -147,11 +174,12 @@ public class NetworkRequestImpl implements NetworkRequest {
                 subChannelInfo.setTagName(gsonData.getTag_name());
                 subChannelInfo.setIconUrl(gsonData.getIcon_url());
 
-                mSubChannelInfos.add(subChannelInfo);
+                subChannelInfos.add(subChannelInfo);
             }
         } catch (Exception e) {
             Log.e(TAG, "handlerAllSubChannelsResponse: allSubChannel is null", e);
         }
+        return subChannelInfos;
     }
 
     @Override
@@ -190,7 +218,6 @@ public class NetworkRequestImpl implements NetworkRequest {
             roomInfo.setRoomName(room.getRoom_name());
             roomInfo.setNickname(room.getNickname());
             roomInfo.setOnline(room.getOnline());
-            mRoomInfos.add(roomInfo);
 
             return roomInfo;
         } catch (Exception e) {

@@ -24,8 +24,9 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
-        <activity android:name=".ui.ChannelActivity"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".ui.ChannelActivity" />
+        <activity android:name=".ui.SearchResultActivity"></activity>
     </application>
 
 </manifest>

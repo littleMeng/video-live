@@ -12,14 +12,14 @@ import com.example.meng.videolive.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String mTabSpec[] = {"head", "classify", "heart", "user"};
+    private final String mTabSpec[] = {"head", "classify", "heart", "search"};
 
-    private final String mIndicator[] = {"首页", "分类", "喜欢", "我的"};
+    private final String mIndicator[] = {"首页", "分类", "喜欢", "搜索"};
 
     private final Class mFragmentsClass[] = {HeadPagerFragment.class,
                                 ClassifyFragment.class,
                                 HeartFragment.class,
-                                UserFragment.class};
+                                SearchFragment.class};
 
     private final int mTabImage[] = {R.drawable.tab_home_item,
                                 R.drawable.tab_classify_item,

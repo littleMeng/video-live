@@ -15,16 +15,20 @@ public class GsonSubChannel {
     public static class Room {
         private int room_id;
         private String room_src;
+        private String roomSrc;
         private String room_name;
         private String nickname;
         private int online;
-
         public int getRoom_id() {
             return room_id;
         }
 
         public String getRoom_src() {
             return room_src;
+        }
+
+        public String getRoomSrc() {
+            return roomSrc;
         }
 
         public String getRoom_name() {
@@ -41,7 +45,7 @@ public class GsonSubChannel {
 
         @Override
         public String toString() {
-            return "Room [room_id=" + room_id + ", room_src=" + room_src +
+            return "Room [room_id=" + room_id + ", room_src=" + room_src + ", roomSrc=" + roomSrc +
                     ", room_name=" + room_name + ", nickname=" + nickname +
                     ", setOnline=" + online + "]";
         }

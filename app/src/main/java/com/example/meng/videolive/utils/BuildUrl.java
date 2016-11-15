@@ -58,4 +58,9 @@ public class BuildUrl {
 
         return map;
     }
+
+    public static String getDouyuSearchUrl(String keyWord) {
+        return "http://capi.douyucdn.cn/api/v1/mobileSearch/1/1?sk=" + keyWord +
+                "&offset=0&limit=10&client_sys=android";
+    }
 }

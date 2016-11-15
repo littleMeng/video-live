@@ -32,37 +32,5 @@ public class GsonDouyuRoomInfo {
         public List<GsonSubChannel.Room> getRoom() {
             return room;
         }
-
-//        private int room_id;
-//        private String room_src;
-//        private String room_name;
-//        private String nickname;
-//        private int online;
-//
-//        public int getRoom_id() {
-//            return room_id;
-//        }
-//
-//        public String getRoom_src() {
-//            return room_src;
-//        }
-//
-//        public int getOnline() {
-//            return online;
-//        }
-//
-//        public String getRoom_name() {
-//            return room_name;
-//        }
-//
-//        public String getNickname() {
-//            return nickname;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return "GsonDouyuRoomInfo [room_id=" + room_id + ", room_src=" + room_src +
-//                    ", room_name=" + room_name + ", online=" + online + "]";
-//        }
     }
 }

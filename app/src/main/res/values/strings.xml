@@ -6,4 +6,7 @@
     <string name="switch_danmu">弹幕</string>
     <string name="tab_image">tab图标</string>
     <string name="video_image">视频截图</string>
+    <string name="inputKeyword">输入关键字</string>
+    <string name="search">搜索</string>
+    <string name="keyword">输入关键字</string>
 </resources>
