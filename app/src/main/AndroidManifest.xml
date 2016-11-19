@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:label="斗鱼直播">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +27,8 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".ui.ChannelActivity" />
-        <activity android:name=".ui.SearchResultActivity"></activity>
+        <activity android:name=".ui.SearchResultActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
