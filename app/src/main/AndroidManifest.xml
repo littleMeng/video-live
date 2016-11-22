@@ -26,7 +26,8 @@
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".ui.ChannelActivity" />
+        <activity android:name=".ui.ChannelActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.SearchResultActivity"
             android:screenOrientation="portrait"/>
     </application>
