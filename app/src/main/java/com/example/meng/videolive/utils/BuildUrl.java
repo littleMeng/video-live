@@ -11,15 +11,15 @@ public class BuildUrl {
     public static final String DOUYU_API = "http://capi.douyucdn.cn/api/v1/";
 
     public static String getDouyuLOLSubChannel() {
-        return DOUYU_API + "live/1?&limit=20&offset=0";
+        return DOUYU_API + "live/1?&limit=20";
     }
 
     public static String getDouyuFurnaceStoneSubChannel() {
-        return DOUYU_API + "live/2?&limit=20&offset=0";
+        return DOUYU_API + "live/2?&limit=20";
     }
 
     public static String getDouyuDota2SubChannel() {
-        return DOUYU_API + "live/3?&limit=20&offset=0";
+        return DOUYU_API + "live/3?&limit=20";
     }
 
     public static String getDouyuAllSubChannels() {
@@ -27,11 +27,11 @@ public class BuildUrl {
     }
 
     public static String getDouyuLiveChannel() {
-        return DOUYU_API + "live?&limit=30&offset=0";
+        return DOUYU_API + "live?&limit=30";
     }
 
     public static String getDouyuSubChannelBaseTag(int channelTag) {
-        return DOUYU_API + "live/" + channelTag + "?&limit=20&offset=0";
+        return DOUYU_API + "live/" + channelTag + "?&limit=20";
     }
 
     public static String getDouyuRoom(int roomId) {
@@ -61,6 +61,6 @@ public class BuildUrl {
 
     public static String getDouyuSearchUrl(String keyWord) {
         return "http://capi.douyucdn.cn/api/v1/mobileSearch/1/1?sk=" + keyWord +
-                "&offset=0&limit=10&client_sys=android";
+                "&limit=10&client_sys=android";
     }
 }

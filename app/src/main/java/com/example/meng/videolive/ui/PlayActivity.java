@@ -16,19 +16,22 @@ import com.example.meng.videolive.R;
 import com.example.meng.videolive.db.RoomIdDatabaseHelper;
 import com.example.meng.videolive.utils.DanmuProcess;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.vov.vitamio.Vitamio;
 import master.flame.danmaku.controller.IDanmakuView;
 
 public class PlayActivity extends Activity {
     private static final String TAG = "PLAY_ACTIVITY";
     private static final int CONTROL_STAY_TIME = 4000;
-    private io.vov.vitamio.widget.VideoView videoView;
-    private RelativeLayout mViewControl;
 
-    private IDanmakuView mDanmakuView;
+    @BindView(R.id.vtm_vv) io.vov.vitamio.widget.VideoView videoView;
+    @BindView(R.id.view_control) RelativeLayout mViewControl;
+    @BindView(R.id.danmakuView) IDanmakuView mDanmakuView;
+    @BindView(R.id.ib_heart) ImageButton mBtnHeart;
+
     private DanmuProcess mDanmuProcess;
-    private ImageButton mBtnHeart;
-
     private RoomIdDatabaseHelper mRoomIdDB;
     private int mRoomId;
 
@@ -37,6 +40,8 @@ public class PlayActivity extends Activity {
         super.onCreate(savedInstanceState);
         Vitamio.isInitialized(this);
         setContentView(R.layout.activity_play);
+        ButterKnife.bind(this);
+
         hideSystemUI();
         String path = getIntent().getStringExtra("PATH");
         mRoomId = getIntent().getIntExtra("ROOM_ID", -1);
@@ -85,12 +90,8 @@ public class PlayActivity extends Activity {
 
         mRoomIdDB = new RoomIdDatabaseHelper(getApplicationContext(),
                 RoomIdDatabaseHelper.HEART_DB_NAME, null, 1);
-        videoView = (io.vov.vitamio.widget.VideoView) findViewById(R.id.vtm_vv);
-        mDanmakuView = (IDanmakuView) findViewById(R.id.danmakuView);
-        mViewControl = (RelativeLayout) findViewById(R.id.view_control);
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mDanmuSwitch = (Switch) findViewById(R.id.swch_danmu);
-        mBtnHeart = (ImageButton) findViewById(R.id.ib_heart);
 
         mViewControl.setVisibility(View.INVISIBLE);
         mBtnBack.setOnClickListener(new View.OnClickListener() {
@@ -116,21 +117,18 @@ public class PlayActivity extends Activity {
         } else {
             mBtnHeart.setImageResource(R.mipmap.ic_heart);
         }
-        mBtnHeart.setOnClickListener(mHeartClickListener);
     }
 
-    View.OnClickListener mHeartClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mRoomIdDB.getRoomIds().contains(mRoomId)) {
-                mRoomIdDB.deleteRoomId(mRoomId);
-                mBtnHeart.setImageResource(R.mipmap.ic_heart);
-            } else {
-                mRoomIdDB.addRoomId(mRoomId);
-                mBtnHeart.setImageResource(R.mipmap.ic_heart_press);
-            }
+    @OnClick(R.id.ib_heart)
+    public void heartClickListener() {
+        if (mRoomIdDB.getRoomIds().contains(mRoomId)) {
+            mRoomIdDB.deleteRoomId(mRoomId);
+            mBtnHeart.setImageResource(R.mipmap.ic_heart);
+        } else {
+            mRoomIdDB.addRoomId(mRoomId);
+            mBtnHeart.setImageResource(R.mipmap.ic_heart_press);
         }
-    };
+    }
 
     private void restartHideViewDelay() {
         mHandler.removeCallbacks(mRunnable);

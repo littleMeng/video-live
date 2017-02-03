@@ -4,13 +4,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.utils.BuildUrl;
 
-public class ChannelActivity extends AppCompatActivity {
+public class ChannelActivity extends BaseActivity {
     private static final String TAG = "ChannelActivity";
     public static final String CHANNEL_NAME = "CHANNEL_NAME";
     public static final String CHANNEL_TAG = "CHANNEL_TAG";

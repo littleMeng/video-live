@@ -12,7 +12,7 @@ import com.example.meng.videolive.utils.BuildUrl;
 
 import io.vov.vitamio.utils.Log;
 
-public class SearchResultActivity extends AppCompatActivity {
+public class SearchResultActivity extends BaseActivity {
     private static final String TAG = "SearchResultActivity";
     public static final String KEY_WORD = "KEY_WORD";
 

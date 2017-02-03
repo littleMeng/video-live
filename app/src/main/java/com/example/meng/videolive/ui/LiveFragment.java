@@ -40,6 +40,7 @@ public class LiveFragment extends Fragment {
     private List<RoomInfo> mRoomInfos;
     private RoomInfoAdapter mAdapter;
     private String mRequestUrl;
+    private int mOffset = 0;
 
     private NetworkRequest mNetworkRequest;
 
@@ -144,7 +145,8 @@ public class LiveFragment extends Fragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            mNetworkRequest.getSubChannel(mRequestUrl, mSubChannelListener);
+            String url = mRequestUrl + "&offset=0";
+            mNetworkRequest.getSubChannel(url, mSubChannelListener);
         }
     };
 

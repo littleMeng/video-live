@@ -9,4 +9,5 @@
     <string name="inputKeyword">输入关键字</string>
     <string name="search">搜索</string>
     <string name="keyword">输入关键字</string>
+    <string name="title_activity_base">BaseActivity</string>
 </resources>
