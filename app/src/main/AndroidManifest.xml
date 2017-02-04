@@ -29,8 +29,7 @@
             android:name=".ui.ChannelActivity" />
         <activity
             android:name=".ui.SearchResultActivity" />
-        <activity android:name=".ui.BaseActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.BaseActivity" />
     </application>
 
 </manifest>

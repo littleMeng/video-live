@@ -19,6 +19,7 @@ import com.example.meng.videolive.listener.NetworkRequest;
 import com.example.meng.videolive.listener.RequestStreamUrlListener;
 import com.example.meng.videolive.listener.RequestSubChannelListener;
 import com.example.meng.videolive.model.NetworkRequestImpl;
+import com.example.meng.videolive.utils.AdapterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class LiveFragment extends Fragment {
     private List<RoomInfo> mRoomInfos;
     private RoomInfoAdapter mAdapter;
     private String mRequestUrl;
-    private int mOffset = 0;
+    private int mOffset = 1;
 
     private NetworkRequest mNetworkRequest;
 
@@ -95,7 +96,7 @@ public class LiveFragment extends Fragment {
             }
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mAdapter.setOnItemClickListener(new RoomInfoAdapter.OnItemClickListener() {
+        mAdapter.setAdapterCallback(new AdapterCallback() {
             @Override
             public void onItemClick(View view, int position) {
                 mNetworkRequest.getStreamUrl(mRoomInfos.get(position).getRoomId(), mStreamUrlListener);
@@ -104,6 +105,15 @@ public class LiveFragment extends Fragment {
             @Override
             public void onItemLongClick(View view, int position) {
 
+            }
+
+            @Override
+            public void onPositionChanged(int position) {
+                if (position == (mRoomInfos.size() - 10)) {
+                    String url = mRequestUrl + "&offset=" + mOffset*20;
+                    mOffset++;
+                    mNetworkRequest.getSubChannel(url, mFootRefreshListener);
+                }
             }
         });
     }
@@ -146,13 +156,15 @@ public class LiveFragment extends Fragment {
         @Override
         public void run() {
             String url = mRequestUrl + "&offset=0";
-            mNetworkRequest.getSubChannel(url, mSubChannelListener);
+            mNetworkRequest.getSubChannel(url, mPullToRefreshListener);
         }
     };
 
-    private RequestSubChannelListener mSubChannelListener = new RequestSubChannelListener() {
+    //下拉刷新加载回调
+    private RequestSubChannelListener mPullToRefreshListener = new RequestSubChannelListener() {
         @Override
         public void onSuccess(List<RoomInfo> roomInfos) {
+            mOffset = 1;
             mRoomInfos.clear();
             mRoomInfos.addAll(roomInfos);
             mAdapter.notifyDataSetChanged();
@@ -163,6 +175,22 @@ public class LiveFragment extends Fragment {
         public void onError() {
             Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
             mptrClassicFrameLayout.refreshComplete();
+        }
+    };
+
+    //上拉刷新加载回调
+    private RequestSubChannelListener mFootRefreshListener = new RequestSubChannelListener() {
+        @Override
+        public void onSuccess(List<RoomInfo> roomInfos) {
+            if (roomInfos.size() != 0) {
+                mRoomInfos.addAll(roomInfos);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onError() {
+
         }
     };
 }

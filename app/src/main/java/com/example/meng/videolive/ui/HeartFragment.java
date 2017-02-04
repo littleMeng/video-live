@@ -21,6 +21,7 @@ import com.example.meng.videolive.listener.NetworkRequest;
 import com.example.meng.videolive.listener.RequestHeartRoomsListener;
 import com.example.meng.videolive.listener.RequestStreamUrlListener;
 import com.example.meng.videolive.model.NetworkRequestImpl;
+import com.example.meng.videolive.utils.AdapterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class HeartFragment extends Fragment {
         mAdapter = new RoomInfoAdapter(getContext(), mRoomInfos);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mAdapter.setOnItemClickListener(new RoomInfoAdapter.OnItemClickListener() {
+        mAdapter.setAdapterCallback(new AdapterCallback() {
             @Override
             public void onItemClick(View view, int position) {
                 mNetworkRequest.getStreamUrl(mRoomInfos.get(position).getRoomId(), mStreamUrlListener);
@@ -84,6 +85,11 @@ public class HeartFragment extends Fragment {
                         .setNegativeButton("否", null)
                         .setPositiveButton("是", mPositiveClickListener)
                         .show();
+            }
+
+            @Override
+            public void onPositionChanged(int position) {
+
             }
         });
         setAdapter();

@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.bean.RoomInfo;
 import com.example.meng.videolive.utils.BitmapCache;
+import com.example.meng.videolive.utils.AdapterCallback;
 
 import java.util.List;
 
@@ -33,15 +34,10 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
         imageLoader = new ImageLoader(requestQueue, new BitmapCache());
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-        void onItemLongClick(View view, int position);
-    }
+    private AdapterCallback mAdapterCallback = null;
 
-    private OnItemClickListener mOnItemClickListener = null;
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
+    public void setAdapterCallback(AdapterCallback adapterCallback) {
+        this.mAdapterCallback = adapterCallback;
     }
 
     @Override
@@ -62,23 +58,25 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
         String onlineStr = String.valueOf(online) + "位观众";
         holder.online.setText(onlineStr);
 
-        handleClick(holder);
+        handleCallback(holder);
     }
 
-    private void handleClick(final MyViewHolder holder) {
+    private void handleCallback(final MyViewHolder holder) {
         final int position = holder.getLayoutPosition();
-        if (mOnItemClickListener != null) {
+        if (mAdapterCallback != null) {
+            mAdapterCallback.onPositionChanged(position);
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(holder.itemView, position);
+                    mAdapterCallback.onItemClick(holder.itemView, position);
                 }
             });
 
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    mOnItemClickListener.onItemLongClick(holder.itemView, position);
+                    mAdapterCallback.onItemLongClick(holder.itemView, position);
                     return true;
                 }
             });

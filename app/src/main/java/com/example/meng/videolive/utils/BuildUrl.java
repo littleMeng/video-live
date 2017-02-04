@@ -27,7 +27,7 @@ public class BuildUrl {
     }
 
     public static String getDouyuLiveChannel() {
-        return DOUYU_API + "live?&limit=30";
+        return DOUYU_API + "live?&limit=20";
     }
 
     public static String getDouyuSubChannelBaseTag(int channelTag) {
