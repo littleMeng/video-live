@@ -13,6 +13,11 @@
         android:layout_weight="1">
     </FrameLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#333333"/>
+
     <android.support.v4.app.FragmentTabHost
         android:id="@+id/tab_host"
         android:layout_width="match_parent"
