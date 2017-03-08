@@ -12,39 +12,25 @@ public class GsonDouyuRoom {
         return error;
     }
 
-    public void setError(int error) {
-        this.error = error;
-    }
-
     public Data getData() {
         return data;
     }
 
-    public void setData(Data data) {
-        this.data = data;
-    }
-
     public static class Data {
         private int room_id;
-        private String rtmp_url;
-        private String rtmp_live;
-
-        public String getRtmp_live() {
-            return rtmp_live;
-        }
-
-        public String getRtmp_url() {
-            return rtmp_url;
-        }
+        private String live_url;
 
         public int getRoom_id() {
             return room_id;
         }
 
+        public String getLive_url() {
+            return live_url;
+        }
+
         @Override
         public String toString() {
-            return "GsonDouyuRoom [room_id=" + room_id + ", rtmp_url=" + rtmp_url + ", rtmp_live="
-                    + rtmp_live + "]";
+            return "GsonDouyuRoom [room_id=" + room_id + ", live_url" + live_url + "]";
         }
     }
 }

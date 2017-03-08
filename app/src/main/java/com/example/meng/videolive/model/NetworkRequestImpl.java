@@ -115,7 +115,7 @@ public class NetworkRequestImpl implements NetworkRequest {
     @Override
     public void getStreamUrl(final int roomId, final RequestStreamUrlListener listener) {
         String url = BuildUrl.getDouyuRoomUrl(roomId);
-        StringRequest request = new StringRequest(Request.Method.POST, url,
+        StringRequest request = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -123,7 +123,7 @@ public class NetworkRequestImpl implements NetworkRequest {
                         Gson gson = new Gson();
                         try {
                             GsonDouyuRoom roomInfo = gson.fromJson(response, GsonDouyuRoom.class);
-                            String url = roomInfo.getData().getRtmp_url() + "/" + roomInfo.getData().getRtmp_live();
+                            String url = roomInfo.getData().getLive_url();
                             listener.onSuccess(roomId, url);
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: roomInfo is null", e);
@@ -136,7 +136,7 @@ public class NetworkRequestImpl implements NetworkRequest {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 return BuildUrl.getDouyuRoomParams(roomId);
             }
         };

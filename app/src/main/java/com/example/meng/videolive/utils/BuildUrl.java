@@ -39,22 +39,19 @@ public class BuildUrl {
     }
 
     public static String getDouyuRoomUrl(int roomId) {
-        return "http://www.douyu.com/lapi/live/getPlay/" + roomId;
+        return "http://coapi.douyucdn.cn/lapi/live/thirdPart/getPlay/" + roomId + "?rate=0";
     }
 
-    public static Map<String, String> getDouyuRoomParams(int roomId) {
-        Map<String, String> map = new HashMap<>();
-        long time = System.currentTimeMillis()/(1000*60);
-        String did = UUID.randomUUID().toString().toUpperCase();
-        did = did.replace("-", "");
-        String str = roomId + did + "A12Svb&%1UUmf@hC" + time;
-        String sign = Md5.strToMd5Low32(str);
+    public static HashMap<String, String> getDouyuRoomParams(int roomId) {
+        int time = (int) (System.currentTimeMillis()/1000);
+        String signContent = "lapi/live/thirdPart/getPlay/" + roomId + "?aid=pcclient&rate=0&time="
+                + time + "9TUk5fjjUjg9qIMH3sdnh";
+        String sign = Md5.strToMd5Low32(signContent);
 
-        map.put("cdn", "ws");
-        map.put("rate", "0");
-        map.put("tt", String.valueOf(time));
-        map.put("did", did);
-        map.put("sign", sign);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("auth", sign);
+        map.put("time", "" + time);
+        map.put("aid", "pcclient");
 
         return map;
     }
