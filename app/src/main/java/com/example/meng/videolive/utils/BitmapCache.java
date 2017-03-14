@@ -12,8 +12,9 @@ public class BitmapCache implements ImageLoader.ImageCache {
     private LruCache<String, Bitmap> mCache;
 
     public BitmapCache(){
-        int maxSize = 20 * 1024 * 1024;
-        mCache = new LruCache<String, Bitmap>(maxSize){
+        int maxSize = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        int cacheSize = maxSize / 8;
+        mCache = new LruCache<String, Bitmap>(cacheSize){
             @Override
             protected int sizeOf(String key, Bitmap value) {
                 return value.getRowBytes() * value.getHeight();
