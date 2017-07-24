@@ -15,8 +15,8 @@ public class BuildUrl {
         return DOUYU_API + "live/1?&limit=20";
     }
 
-    public static String getDouyuFurnaceStoneSubChannel() {
-        return DOUYU_API + "live/2?&limit=20";
+    public static String getDouyuPlayerUnknowChannel() {
+        return DOUYU_API + "live/270?&limit=20";
     }
 
     public static String getDouyuDota2SubChannel() {

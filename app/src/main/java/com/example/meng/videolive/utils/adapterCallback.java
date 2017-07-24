@@ -4,6 +4,7 @@ import android.view.View;
 
 /**
  * Created by mengshen on 2017/2/5.
+ *
  */
 public interface AdapterCallback {
     void onItemClick(View view, int position);

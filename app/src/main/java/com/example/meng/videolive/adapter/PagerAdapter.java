@@ -14,14 +14,14 @@ import com.example.meng.videolive.utils.BuildUrl;
 public class PagerAdapter extends FragmentPagerAdapter {
     private LiveFragment mDota2Live = null;
     private LiveFragment mLolLive = null;
-    private LiveFragment mFurnaceStoneLive = null;
+    private LiveFragment mPlayerUnknowLive = null;
     private LiveFragment mLive = null;
 
     public PagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    private final String[] titles = {"推荐", "DOTA2", "LOL", "炉石"};
+    private final String[] titles = {"推荐", "DOTA2", "LOL", "大逃杀"};
 
     @Override
     public CharSequence getPageTitle(int position) {
@@ -55,11 +55,11 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 }
                 return mLolLive;
             case 3:
-                if (mFurnaceStoneLive == null){
-                    String url = BuildUrl.getDouyuFurnaceStoneSubChannel();
-                    mFurnaceStoneLive = LiveFragment.newInstance(url);
+                if (mPlayerUnknowLive == null){
+                    String url = BuildUrl.getDouyuPlayerUnknowChannel();
+                    mPlayerUnknowLive = LiveFragment.newInstance(url);
                 }
-                return mFurnaceStoneLive;
+                return mPlayerUnknowLive;
             default:
                 return null;
         }
