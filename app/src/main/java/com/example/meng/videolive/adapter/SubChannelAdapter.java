@@ -8,33 +8,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.bean.SubChannelInfo;
-import com.example.meng.videolive.utils.BitmapCache;
 
 import java.util.List;
 
 /**
  * Created by uspai.taobao.com on 2016/6/24.
+ *
  */
 public class SubChannelAdapter extends RecyclerView.Adapter<SubChannelAdapter.MyViewHolder> {
     private Context mContext;
     private List<SubChannelInfo> mSubChannelInfos;
-    private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
 
     public SubChannelAdapter(Context context, List<SubChannelInfo> subChannelInfos) {
         this.mContext = context;
         this.mSubChannelInfos = subChannelInfos;
-        requestQueue = Volley.newRequestQueue(context);
-        imageLoader = new ImageLoader(requestQueue, new BitmapCache());
-    }
-
-    public void setmSubChannelInfos(List<SubChannelInfo> mSubChannelInfos) {
-        this.mSubChannelInfos = mSubChannelInfos;
     }
 
     public interface OnItemClickListener {
@@ -49,16 +39,17 @@ public class SubChannelAdapter extends RecyclerView.Adapter<SubChannelAdapter.My
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyViewHolder myViewHolder = new MyViewHolder(LayoutInflater.from(mContext).
+        return new MyViewHolder(LayoutInflater.from(mContext).
                 inflate(R.layout.sub_channel_item, parent, false));
-        return myViewHolder;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ImageLoader.ImageListener listener = ImageLoader.getImageListener(holder.gameIcon,
-                R.mipmap.default_dota2, R.mipmap.default_dota2);
-        imageLoader.get(mSubChannelInfos.get(position).getIconUrl(), listener);
+        Glide.with(mContext).
+                load(mSubChannelInfos.get(position).getIconUrl()).
+                fitCenter().
+                error(R.mipmap.default_dota2).
+                into(holder.gameIcon);
         String gameName = mSubChannelInfos.get(position).getTagName();
         holder.gameName.setText(gameName);
 

@@ -2,6 +2,7 @@ package com.example.meng.videolive.bean;
 
 /**
  * Created by mengshen on 2016/11/1.
+ *
  */
 
 public class GsonDouyuRoom {

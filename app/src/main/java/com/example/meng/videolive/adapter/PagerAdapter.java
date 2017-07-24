@@ -9,6 +9,7 @@ import com.example.meng.videolive.utils.BuildUrl;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.
+ *
  */
 public class PagerAdapter extends FragmentPagerAdapter {
     private LiveFragment mDota2Live = null;

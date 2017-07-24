@@ -17,6 +17,7 @@ import com.example.meng.videolive.adapter.PagerAdapter;
 
 /**
  * Created by uspai.taobao.com on 2016/6/22.
+ *
  */
 public class HeadPagerFragment extends Fragment {
     private View mView;

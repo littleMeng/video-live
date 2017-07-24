@@ -31,6 +31,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.
+ *
  */
 public class LiveFragment extends Fragment {
     private static final String TAG = "LIVE_FRAGMENT";

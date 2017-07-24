@@ -2,6 +2,7 @@ package com.example.meng.videolive.bean;
 
 /**
  * Created by uspai.taobao.com on 2016/6/24.
+ *
  */
 public class SubChannelInfo {
     private int tagId;

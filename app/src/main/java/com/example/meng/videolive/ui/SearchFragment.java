@@ -18,6 +18,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 /**
  * Created by uspai.taobao.com on 2016/6/23.
+ *
  */
 public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment";

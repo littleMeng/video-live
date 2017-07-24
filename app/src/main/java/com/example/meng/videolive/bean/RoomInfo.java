@@ -2,6 +2,7 @@ package com.example.meng.videolive.bean;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.
+ *
  */
 public class RoomInfo {
     private int roomId;

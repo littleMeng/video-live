@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Created by 小萌神_0 on 2016/5/28.
+ *
  */
 public class GsonDouyuRoomInfo {
     private int error;

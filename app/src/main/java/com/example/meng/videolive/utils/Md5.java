@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by 小萌神_0 on 2016/5/28.
+ *
  */
 public class Md5 {
     public static String strToMd5Low32(String str) {

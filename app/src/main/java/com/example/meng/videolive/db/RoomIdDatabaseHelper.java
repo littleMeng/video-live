@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by uspai.taobao.com on 2016/6/26.
+ *
  */
 public class RoomIdDatabaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_COLLECT = "create table Collect ("

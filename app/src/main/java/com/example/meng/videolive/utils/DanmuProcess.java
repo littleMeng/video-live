@@ -24,6 +24,7 @@ import master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
 /**
  * Created by 小萌神_0 on 2016/5/31.
+ *
  */
 public class DanmuProcess {
     private Context mContext;

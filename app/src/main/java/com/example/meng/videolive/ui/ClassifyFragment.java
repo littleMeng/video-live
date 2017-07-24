@@ -28,6 +28,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by uspai.taobao.com on 2016/6/22.
+ *
  */
 public class ClassifyFragment extends Fragment {
     private static final String TAG = "CLASSIFY_FRAGMENT";

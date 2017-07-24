@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Created by uspai.taobao.com on 2016/6/24.
+ *
  */
 public class GsonAllSubChannels {
     private List<Data> data;

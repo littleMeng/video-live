@@ -8,31 +8,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.bean.RoomInfo;
-import com.example.meng.videolive.utils.BitmapCache;
 import com.example.meng.videolive.utils.AdapterCallback;
 
 import java.util.List;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.
+ *
  */
 public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyViewHolder> {
     private Context context;
     private List<RoomInfo> roomInfos;
-    private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
 
     public RoomInfoAdapter(Context context, List<RoomInfo> roomInfos) {
         this.context = context;
         this.roomInfos = roomInfos;
-        requestQueue = Volley.newRequestQueue(context);
-        imageLoader = new ImageLoader(requestQueue, new BitmapCache());
     }
 
     private AdapterCallback mAdapterCallback = null;
@@ -49,10 +42,11 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ImageLoader.ImageListener listener = ImageLoader.getImageListener(holder.roomSrc,
-                R.mipmap.default_dota2, R.mipmap.default_dota2);
-        imageLoader.get(roomInfos.get(position).getRoomSrc(), listener);
-//        Glide.with(context).load(roomInfos.get(position).getRoomSrc()).error(R.mipmap.default_dota2).into(holder.roomSrc);
+        Glide.with(context).
+                load(roomInfos.get(position).getRoomSrc()).
+                fitCenter().
+                error(R.mipmap.default_dota2).
+                into(holder.roomSrc);
         String nickname = roomInfos.get(position).getNickname();
         holder.nickname.setText(nickname);
         int online = roomInfos.get(position).getOnline();
