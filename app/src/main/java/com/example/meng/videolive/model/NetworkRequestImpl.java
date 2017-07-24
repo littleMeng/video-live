@@ -3,7 +3,6 @@ package com.example.meng.videolive.model;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,7 +26,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by uspai.taobao.com on 2016/7/5.
@@ -123,7 +121,7 @@ public class NetworkRequestImpl implements NetworkRequest {
                         Gson gson = new Gson();
                         try {
                             GsonDouyuRoom roomInfo = gson.fromJson(response, GsonDouyuRoom.class);
-                            String url = roomInfo.getData().getLive_url();
+                            String url = roomInfo.getData().getHls_url();
                             listener.onSuccess(roomId, url);
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: roomInfo is null", e);
@@ -134,12 +132,7 @@ public class NetworkRequestImpl implements NetworkRequest {
             public void onErrorResponse(VolleyError error) {
                 listener.onError();
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return BuildUrl.getDouyuRoomParams(roomId);
-            }
-        };
+        });
 
         mRequestQueue.add(request);
     }

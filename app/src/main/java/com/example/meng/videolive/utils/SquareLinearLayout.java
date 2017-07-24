@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 
 /**
  * Created by uspai.taobao.com on 2016/6/24.
+ *
  */
 public class SquareLinearLayout extends LinearLayout {
     public SquareLinearLayout(Context context) {

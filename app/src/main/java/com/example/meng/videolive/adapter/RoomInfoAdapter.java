@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.meng.videolive.R;
 import com.example.meng.videolive.bean.RoomInfo;
 import com.example.meng.videolive.utils.BitmapCache;
@@ -42,9 +43,8 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyViewHolder myViewHolder = new MyViewHolder(LayoutInflater.from(context).
+        return new MyViewHolder(LayoutInflater.from(context).
                 inflate(R.layout.room_info_item, parent, false));
-        return myViewHolder;
     }
 
     @Override
@@ -52,6 +52,7 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
         ImageLoader.ImageListener listener = ImageLoader.getImageListener(holder.roomSrc,
                 R.mipmap.default_dota2, R.mipmap.default_dota2);
         imageLoader.get(roomInfos.get(position).getRoomSrc(), listener);
+//        Glide.with(context).load(roomInfos.get(position).getRoomSrc()).error(R.mipmap.default_dota2).into(holder.roomSrc);
         String nickname = roomInfos.get(position).getNickname();
         holder.nickname.setText(nickname);
         int online = roomInfos.get(position).getOnline();

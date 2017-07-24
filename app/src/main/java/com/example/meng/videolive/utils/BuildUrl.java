@@ -6,6 +6,7 @@ import java.util.UUID;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.
+ *
  */
 public class BuildUrl {
     public static final String DOUYU_API = "http://capi.douyucdn.cn/api/v1/";
@@ -39,7 +40,7 @@ public class BuildUrl {
     }
 
     public static String getDouyuRoomUrl(int roomId) {
-        return "http://coapi.douyucdn.cn/lapi/live/thirdPart/getPlay/" + roomId + "?rate=0";
+        return "https://m.douyu.com/html5/live?roomId=" + roomId;
     }
 
     public static HashMap<String, String> getDouyuRoomParams(int roomId) {

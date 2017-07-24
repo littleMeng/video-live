@@ -33,6 +33,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by uspai.taobao.com on 2016/6/23.
+ *
  */
 public class HeartFragment extends Fragment {
     private static final String TAG = "HeartFragment";
@@ -81,7 +82,7 @@ public class HeartFragment extends Fragment {
             public void onItemLongClick(View view, int position) {
                 mDeletePosition = position;
                 new AlertDialog.Builder(getContext()).setTitle("收藏")
-                        .setMessage("确认收藏")
+                        .setMessage("取消收藏")
                         .setNegativeButton("否", null)
                         .setPositiveButton("是", mPositiveClickListener)
                         .show();
