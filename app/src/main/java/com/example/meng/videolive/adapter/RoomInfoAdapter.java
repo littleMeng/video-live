@@ -45,6 +45,7 @@ public class RoomInfoAdapter extends RecyclerView.Adapter<RoomInfoAdapter.MyView
         Glide.with(context).
                 load(roomInfos.get(position).getRoomSrc()).
                 fitCenter().
+                placeholder(R.mipmap.default_dota2).
                 error(R.mipmap.default_dota2).
                 into(holder.roomSrc);
         String nickname = roomInfos.get(position).getNickname();
